@@ -13,6 +13,8 @@ class AppBarLogoWidget extends StatelessWidget {
     switch (customerId) {
       case 24:
         return 'assets/logo.png';
+      case 14:
+        return 'assets/logolavagem.png';
 
       default:
         return 'assets/splash.png';

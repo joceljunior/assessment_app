@@ -24,6 +24,7 @@ class EvaluationController extends ValueNotifier<EvaluationState> {
   int index = 0;
   int indexCurrent = 0;
   bool returnQUestion = false;
+  bool showButtonSend = true;
 
   Future getQuestions() async {
     sendState(Loading());
@@ -47,5 +48,21 @@ class EvaluationController extends ValueNotifier<EvaluationState> {
 
   sendState(EvaluationState state) {
     value = state;
+  }
+
+  @override
+  void dispose() {
+    listEvaluations = [];
+    listQuestions = [];
+    questionItem = Question(id: 0, question: '');
+    answerSelected = 0;
+    customerId = 0;
+    commentController = TextEditingController();
+    sliderController = CarouselController();
+    index = 0;
+    indexCurrent = 0;
+    returnQUestion = false;
+    showButtonSend = true;
+    super.dispose();
   }
 }

@@ -158,24 +158,27 @@ class _EvaluationPageState extends State<EvaluationPage> {
                                       child: StepProgressIndicator(
                                         totalSteps: state.questions.length,
                                         currentStep: controller.indexCurrent,
-                                        size: 36,
-                                        selectedColor: Colors.blue,
-                                        unselectedColor: Colors.grey,
-                                        customStep: (index, color, _) =>
-                                            color == Colors.blue
-                                                ? Container(
-                                                    color: color,
-                                                    child: Icon(
-                                                      Icons.check,
-                                                      color: Colors.white,
-                                                    ),
-                                                  )
-                                                : Container(
-                                                    color: color,
-                                                    child: Icon(
-                                                      Icons.remove,
-                                                    ),
-                                                  ),
+                                        size: 8,
+                                        padding: 0,
+                                        selectedColor: Colors.yellow,
+                                        unselectedColor: Colors.cyan,
+                                        roundedEdges: Radius.circular(10),
+                                        selectedGradientColor: LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: [
+                                            Colors.blue,
+                                            Colors.blue[200]!
+                                          ],
+                                        ),
+                                        unselectedGradientColor: LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: [
+                                            Colors.black45,
+                                            Colors.black38
+                                          ],
+                                        ),
                                       ),
                                     )
                                   ],
@@ -201,29 +204,31 @@ class _EvaluationPageState extends State<EvaluationPage> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        vertical: 8.0, horizontal: 10),
+                                        vertical: 8.0, horizontal: 15),
                                     child: StepProgressIndicator(
                                       totalSteps:
                                           controller.listQuestions.length,
                                       currentStep: controller.indexCurrent,
-                                      size: 36,
-                                      selectedColor: Colors.blue,
-                                      unselectedColor: Colors.grey,
-                                      customStep: (index, color, _) =>
-                                          color == Colors.blue
-                                              ? Container(
-                                                  color: color,
-                                                  child: Icon(
-                                                    Icons.check,
-                                                    color: Colors.white,
-                                                  ),
-                                                )
-                                              : Container(
-                                                  color: color,
-                                                  child: Icon(
-                                                    Icons.remove,
-                                                  ),
-                                                ),
+                                      size: 8,
+                                      selectedColor: Colors.yellow,
+                                      unselectedColor: Colors.cyan,
+                                      roundedEdges: Radius.circular(10),
+                                      selectedGradientColor: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          Colors.blue,
+                                          Colors.blue[200]!
+                                        ],
+                                      ),
+                                      unselectedGradientColor: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          Colors.black45,
+                                          Colors.black38
+                                        ],
+                                      ),
                                     ),
                                   )
                                 ]),
@@ -317,6 +322,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
                               } else {
                                 setState(() {
                                   controller.showButtonSend = false;
+                                  controller.indexCurrent++;
                                 });
                                 controller.postEvaluations();
                               }

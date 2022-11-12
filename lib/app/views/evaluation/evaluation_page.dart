@@ -7,6 +7,7 @@ import 'package:assessment_app/app/controllers/evaluation_controller.dart';
 import 'package:assessment_app/app/models/evaluation.dart';
 import 'package:assessment_app/core/states/evaluation_states.dart';
 import 'package:assessment_app/core/widgets/app_bar_logo_widget.dart';
+import 'package:go_router/go_router.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 import '../../models/question.dart';
@@ -116,6 +117,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
                                           style: TextStyle(fontSize: 20)),
                                     ),
                                     Expanded(
+                                      flex: 2,
                                       child: RatingBar.builder(
                                         initialRating:
                                             controller.answerSelected,
@@ -123,6 +125,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
                                         direction: Axis.horizontal,
                                         allowHalfRating: true,
                                         itemCount: 5,
+                                        itemSize: size.height * 0.1,
                                         itemBuilder: (context, _) => Icon(
                                           Icons.star,
                                           color: Colors.amber,
@@ -134,10 +137,11 @@ class _EvaluationPageState extends State<EvaluationPage> {
                                       ),
                                     ),
                                     Expanded(
+                                      flex: 2,
                                       child: TextFormField(
                                         controller:
                                             controller.commentController,
-                                        maxLines: 2,
+                                        maxLines: 4,
                                         decoration: InputDecoration(
                                           contentPadding: EdgeInsets.all(10.0),
                                           border: OutlineInputBorder(
@@ -185,54 +189,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
                                 );
                               });
                         } else {
-                          return SizedBox(
-                            height: size.height * 0.3,
-                            width: size.width,
-                            child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Expanded(
-                                    child: Center(
-                                      child: Text(
-                                        'Obrigado pelo seu feedback!',
-                                        style: TextStyle(
-                                            fontSize: 22,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 8.0, horizontal: 15),
-                                    child: StepProgressIndicator(
-                                      totalSteps:
-                                          controller.listQuestions.length,
-                                      currentStep: controller.indexCurrent,
-                                      size: 8,
-                                      selectedColor: Colors.yellow,
-                                      unselectedColor: Colors.cyan,
-                                      roundedEdges: Radius.circular(10),
-                                      selectedGradientColor: LinearGradient(
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        colors: [
-                                          Colors.blue,
-                                          Colors.blue[200]!
-                                        ],
-                                      ),
-                                      unselectedGradientColor: LinearGradient(
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        colors: [
-                                          Colors.black45,
-                                          Colors.black38
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                ]),
-                          );
+                          return Container();
                         }
                       }),
                 ),
@@ -296,35 +253,46 @@ class _EvaluationPageState extends State<EvaluationPage> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            onPressed: () {
-                              var value = Evaluation(
-                                controller.questionItem.id,
-                                controller.customerId,
-                                controller.answerSelected,
-                                controller.commentController.text,
-                              );
-                              if (controller.returnQUestion) {
-                                // var itemSelected = controller.listEvaluations
-                                //     .firstWhere((element) =>
-                                //         element.idQuestion == value.idQuestion);
-                                // controller.listEvaluations.remove(itemSelected);
-                                controller.listEvaluations
-                                    .setAll(controller.index, [value]);
+                            onPressed: () async {
+                              if (controller.answerSelected != 0) {
+                                var value = Evaluation(
+                                  controller.questionItem.id,
+                                  controller.customerId,
+                                  controller.answerSelected,
+                                  controller.commentController.text,
+                                );
+                                if (controller.returnQUestion) {
+                                  // var itemSelected = controller.listEvaluations
+                                  //     .firstWhere((element) =>
+                                  //         element.idQuestion == value.idQuestion);
+                                  // controller.listEvaluations.remove(itemSelected);
+                                  controller.listEvaluations
+                                      .setAll(controller.index, [value]);
+                                } else {
+                                  controller.listEvaluations.add(value);
+                                }
+                                controller.commentController.clear();
+                                controller.returnQUestion = false;
+                                controller.answerSelected = 0;
+                                if (controller.listQuestions.length - 1 >
+                                    controller.index) {
+                                  controller.sliderController.nextPage();
+                                } else {
+                                  setState(() {
+                                    controller.showButtonSend = false;
+                                    controller.indexCurrent++;
+                                  });
+                                  await controller.postEvaluations();
+                                  GoRouter.of(context).go(
+                                      '/checkout/${controller.listQuestions.length}/${widget.customerId}');
+                                }
                               } else {
-                                controller.listEvaluations.add(value);
-                              }
-                              controller.commentController.clear();
-                              controller.returnQUestion = false;
-                              controller.answerSelected = 0;
-                              if (controller.listQuestions.length - 1 >
-                                  controller.index) {
-                                controller.sliderController.nextPage();
-                              } else {
-                                setState(() {
-                                  controller.showButtonSend = false;
-                                  controller.indexCurrent++;
-                                });
-                                controller.postEvaluations();
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                  content: Text('Selecione uma nota'),
+                                  duration: Duration(seconds: 2),
+                                  backgroundColor: Colors.red,
+                                ));
                               }
                             },
                           ),

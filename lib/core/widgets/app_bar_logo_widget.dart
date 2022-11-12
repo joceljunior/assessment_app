@@ -23,6 +23,9 @@ class AppBarLogoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset(getLogo(customerId: customerId));
+    return Padding(
+      padding: EdgeInsets.all(size.height * 0.02),
+      child: Image.asset(getLogo(customerId: customerId)),
+    );
   }
 }

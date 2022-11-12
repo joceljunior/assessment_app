@@ -40,7 +40,6 @@ class EvaluationController extends ValueNotifier<EvaluationState> {
     sendState(Loading());
     try {
       await repositoryEvaluation.postEvaluations(evaluations: listEvaluations);
-      sendState(SuccessPost());
     } on QuestionFailure catch (e) {
       sendState(Error(message: e.message));
     }

@@ -1,3 +1,4 @@
+import 'package:assessment_app/app/views/checkout/checkout_page.dart';
 import 'package:assessment_app/app/views/evaluation/evaluation_page.dart';
 import 'package:assessment_app/app/views/splash/splash_page.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,15 @@ class RouterAssessment {
         path: '/evaluation/:customerId',
         builder: (BuildContext context, GoRouterState state) {
           return EvaluationPage(customerId: state.params['customerId']);
+        },
+      ),
+      GoRoute(
+        path: '/checkout/:totalSteps/:customerId',
+        builder: (BuildContext context, GoRouterState state) {
+          return CheckoutPage(
+            totalSteps: state.params['totalSteps']!,
+            customerId: state.params['customerId']!,
+          );
         },
       ),
     ],

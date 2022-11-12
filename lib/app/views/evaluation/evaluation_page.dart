@@ -125,7 +125,9 @@ class _EvaluationPageState extends State<EvaluationPage> {
                                         direction: Axis.horizontal,
                                         allowHalfRating: true,
                                         itemCount: 5,
-                                        itemSize: size.height * 0.1,
+                                        itemSize: size.height * 0.08,
+                                        wrapAlignment:
+                                            WrapAlignment.spaceBetween,
                                         itemBuilder: (context, _) => Icon(
                                           Icons.star,
                                           color: Colors.amber,

@@ -23,6 +23,13 @@ class EvaluationPage extends StatefulWidget {
 EvaluationController controller = EvaluationController();
 
 class _EvaluationPageState extends State<EvaluationPage> {
+  List<Widget> options = <Widget>[
+    Text('Limpeza'),
+    Text('Educação'),
+    Text('Muito caro')
+  ];
+  final List<bool> _selectedVegetables = <bool>[false, true, false];
+
   @override
   void initState() {
     controller.indexCurrent = 0;
@@ -54,14 +61,18 @@ class _EvaluationPageState extends State<EvaluationPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  child: AppBarLogoWidget(
-                    size: size,
-                    customerId: int.parse(
-                        widget.customerId == null ? '0' : widget.customerId!),
-                  ),
+                // AppBarLogoWidget(
+                //   size: size,
+                //   customerId: int.parse(
+                //       widget.customerId == null ? '0' : widget.customerId!),
+                // ),
+                Container(
+                  height: size.height * 0.2,
+                  color: Colors.red,
                 ),
-                Expanded(
+                Container(
+                  height: size.height * 0.6,
+                  color: Colors.blue,
                   child: ValueListenableBuilder<EvaluationState>(
                       valueListenable: controller,
                       builder: (context, state, child) {
@@ -80,7 +91,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
                           return CarouselSlider.builder(
                               carouselController: controller.sliderController,
                               options: CarouselOptions(
-                                aspectRatio: 16 / 9,
+                                aspectRatio: 16 / 20,
                                 viewportFraction: 0.9,
                                 initialPage: 0,
                                 enableInfiniteScroll: false,
@@ -110,52 +121,47 @@ class _EvaluationPageState extends State<EvaluationPage> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
                                   children: [
-                                    Expanded(
-                                      flex: 2,
-                                      child: Text(
-                                          controller.questionItem.question,
-                                          style: TextStyle(fontSize: 20)),
-                                    ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: RatingBar.builder(
-                                        initialRating:
-                                            controller.answerSelected,
-                                        minRating: 0,
-                                        direction: Axis.horizontal,
-                                        allowHalfRating: true,
-                                        itemCount: 5,
-                                        itemSize: size.height * 0.08,
-                                        wrapAlignment:
-                                            WrapAlignment.spaceBetween,
-                                        itemBuilder: (context, _) => Icon(
-                                          Icons.star,
-                                          color: Colors.amber,
-                                        ),
-                                        onRatingUpdate: (rating) {
-                                          controller.answerSelected = rating;
-                                          print(rating);
-                                        },
+                                    Text(controller.questionItem.question,
+                                        style: TextStyle(fontSize: 20)),
+                                    RatingBar.builder(
+                                      initialRating: controller.answerSelected,
+                                      minRating: 0,
+                                      direction: Axis.horizontal,
+                                      allowHalfRating: true,
+                                      itemCount: 5,
+                                      itemSize: size.height * 0.08,
+                                      wrapAlignment: WrapAlignment.end,
+                                      itemBuilder: (context, _) => Icon(
+                                        Icons.star,
+                                        color: Colors.amber,
                                       ),
+                                      onRatingUpdate: (rating) {
+                                        controller.answerSelected = rating;
+                                        print(rating);
+                                      },
                                     ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: TextFormField(
-                                        controller:
-                                            controller.commentController,
-                                        maxLines: 4,
-                                        decoration: InputDecoration(
-                                          contentPadding: EdgeInsets.all(10.0),
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(
-                                              Radius.circular(5),
-                                            ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Text(
+                                          "Selecione um ou mais problemas"),
+                                    ),
+                                    ToggleButtons(
+                                        children: options,
+                                        isSelected: _selectedVegetables),
+                                    TextFormField(
+                                      controller: controller.commentController,
+                                      maxLines: 4,
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.all(10.0),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(5),
                                           ),
-                                          hintStyle: TextStyle(
-                                            color: Colors.black45,
-                                          ),
-                                          hintText: 'Deixe um comentário',
                                         ),
+                                        hintStyle: TextStyle(
+                                          color: Colors.black45,
+                                        ),
+                                        hintText: 'Deixe um comentário',
                                       ),
                                     ),
                                     Padding(
@@ -195,113 +201,111 @@ class _EvaluationPageState extends State<EvaluationPage> {
                         }
                       }),
                 ),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: /*controller.index*/ 0 == 0
-                        ? MainAxisAlignment.center
-                        : MainAxisAlignment.spaceAround,
-                    children: [
-                      Visibility(
-                        visible: /*controller.index != 0*/ false,
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: size.height * 0.08),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: size.height * 0.04,
-                                  horizontal: size.height * 0.07,
-                                ),
-                                elevation: 5,
-                                backgroundColor: Colors.white24,
-                                side: BorderSide(
-                                    width: 1,
-                                    color: Color.fromARGB(78, 0, 0, 0))),
-                            child: Text(
-                              'VOLTAR',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
+                Row(
+                  mainAxisAlignment: /*controller.index*/ 0 == 0
+                      ? MainAxisAlignment.center
+                      : MainAxisAlignment.spaceAround,
+                  children: [
+                    Visibility(
+                      visible: /*controller.index != 0*/ false,
+                      child: Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: size.height * 0.08),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                vertical: size.height * 0.04,
+                                horizontal: size.height * 0.07,
                               ),
+                              elevation: 5,
+                              backgroundColor: Colors.white24,
+                              side: BorderSide(
+                                  width: 1,
+                                  color: Color.fromARGB(78, 0, 0, 0))),
+                          child: Text(
+                            'VOLTAR',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
                             ),
-                            onPressed: () {
-                              controller.returnQUestion = true;
-                              controller.answerSelected = 0;
-                              controller.sliderController.previousPage();
-                            },
                           ),
+                          onPressed: () {
+                            controller.returnQUestion = true;
+                            controller.answerSelected = 0;
+                            controller.sliderController.previousPage();
+                          },
                         ),
                       ),
-                      Visibility(
-                        visible: controller.showButtonSend,
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: size.height * 0.08),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: size.height * 0.04,
-                                  horizontal: size.height * 0.07,
-                                ),
-                                elevation: 5,
-                                backgroundColor:
-                                    Color.fromARGB(255, 27, 115, 231),
-                                side: BorderSide(
-                                    width: 1,
-                                    color: Color.fromARGB(78, 0, 0, 0))),
-                            child: Text(
-                              'AVALIAR',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
+                    ),
+                    Visibility(
+                      visible: controller.showButtonSend,
+                      child: Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: size.height * 0.08),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                vertical: size.height * 0.04,
+                                horizontal: size.height * 0.07,
                               ),
+                              elevation: 5,
+                              backgroundColor:
+                                  Color.fromARGB(255, 27, 115, 231),
+                              side: BorderSide(
+                                  width: 1,
+                                  color: Color.fromARGB(78, 0, 0, 0))),
+                          child: Text(
+                            'AVALIAR',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
                             ),
-                            onPressed: () async {
-                              if (controller.answerSelected != 0) {
-                                var value = Evaluation(
-                                  controller.questionItem.id,
-                                  controller.customerId,
-                                  controller.answerSelected,
-                                  controller.commentController.text,
-                                );
-                                if (controller.returnQUestion) {
-                                  // var itemSelected = controller.listEvaluations
-                                  //     .firstWhere((element) =>
-                                  //         element.idQuestion == value.idQuestion);
-                                  // controller.listEvaluations.remove(itemSelected);
-                                  controller.listEvaluations
-                                      .setAll(controller.index, [value]);
-                                } else {
-                                  controller.listEvaluations.add(value);
-                                }
-                                controller.commentController.clear();
-                                controller.returnQUestion = false;
-                                controller.answerSelected = 0;
-                                if (controller.listQuestions.length - 1 >
-                                    controller.index) {
-                                  controller.sliderController.nextPage();
-                                } else {
-                                  setState(() {
-                                    controller.showButtonSend = false;
-                                    controller.indexCurrent++;
-                                  });
-                                  await controller.postEvaluations();
-                                  GoRouter.of(context).go(
-                                      '/checkout/${controller.listQuestions.length}/${widget.customerId}');
-                                }
+                          ),
+                          onPressed: () async {
+                            if (controller.answerSelected != 0) {
+                              var value = Evaluation(
+                                controller.questionItem.id,
+                                controller.customerId,
+                                controller.answerSelected,
+                                controller.commentController.text,
+                              );
+                              if (controller.returnQUestion) {
+                                // var itemSelected = controller.listEvaluations
+                                //     .firstWhere((element) =>
+                                //         element.idQuestion == value.idQuestion);
+                                // controller.listEvaluations.remove(itemSelected);
+                                controller.listEvaluations
+                                    .setAll(controller.index, [value]);
                               } else {
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(
-                                  content: Text('Selecione uma nota'),
-                                  duration: Duration(seconds: 2),
-                                  backgroundColor: Colors.red,
-                                ));
+                                controller.listEvaluations.add(value);
                               }
-                            },
-                          ),
+                              controller.commentController.clear();
+                              controller.returnQUestion = false;
+                              controller.answerSelected = 0;
+                              if (controller.listQuestions.length - 1 >
+                                  controller.index) {
+                                controller.sliderController.nextPage();
+                              } else {
+                                setState(() {
+                                  controller.showButtonSend = false;
+                                  controller.indexCurrent++;
+                                });
+                                await controller.postEvaluations();
+                                GoRouter.of(context).go(
+                                    '/checkout/${controller.listQuestions.length}/${widget.customerId}');
+                              }
+                            } else {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text('Selecione uma nota'),
+                                duration: Duration(seconds: 2),
+                                backgroundColor: Colors.red,
+                              ));
+                            }
+                          },
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ],
             ),

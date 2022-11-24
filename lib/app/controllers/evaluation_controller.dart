@@ -26,6 +26,8 @@ class EvaluationController extends ValueNotifier<EvaluationState> {
   bool returnQUestion = false;
   bool showButtonSend = true;
 
+  bool menorIgual = true; //caca
+
   Future getQuestions() async {
     sendState(Loading());
     try {

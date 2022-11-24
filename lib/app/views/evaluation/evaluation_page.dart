@@ -24,9 +24,9 @@ EvaluationController controller = EvaluationController();
 
 class _EvaluationPageState extends State<EvaluationPage> {
   List<Widget> options = <Widget>[
-    Text('Limpeza'),
-    Text('Educação'),
-    Text('Muito caro')
+    Text('Limpeza', style: TextStyle(fontSize: 20)),
+    Text('Educação', style: TextStyle(fontSize: 20)),
+    Text('Muito caro', style: TextStyle(fontSize: 20))
   ];
   final List<bool> _selectedVegetables = <bool>[false, true, false];
 
@@ -72,7 +72,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
                 ),
                 Container(
                   height: size.height * 0.6,
-                  color: Colors.blue,
+                  color: Color.fromARGB(255, 255, 255, 255),
                   child: ValueListenableBuilder<EvaluationState>(
                       valueListenable: controller,
                       builder: (context, state, child) {
@@ -129,6 +129,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
                                       direction: Axis.horizontal,
                                       allowHalfRating: true,
                                       itemCount: 5,
+                                      glow: false, //brilho
                                       itemSize: size.height * 0.08,
                                       wrapAlignment: WrapAlignment.end,
                                       itemBuilder: (context, _) => Icon(
@@ -137,17 +138,64 @@ class _EvaluationPageState extends State<EvaluationPage> {
                                       ),
                                       onRatingUpdate: (rating) {
                                         controller.answerSelected = rating;
+                                        if ((controller.answerSelected) > 3) {
+                                          controller.menorIgual = false;
+                                        } else {
+                                          setState(() {
+                                            controller.menorIgual = true;
+                                          });
+                                        }
                                         print(rating);
                                       },
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(20.0),
-                                      child: Text(
-                                          "Selecione um ou mais problemas"),
-                                    ),
-                                    ToggleButtons(
-                                        children: options,
-                                        isSelected: _selectedVegetables),
+                                    Visibility(
+                                        visible: controller.menorIgual,
+                                        child: Padding(
+                                            padding: const EdgeInsets.all(20.0),
+                                            child: Text(
+                                              "Selecione um ou mais problemas",
+                                              style: TextStyle(fontSize: 20),
+                                            ))),
+
+                                    //if (controller.answerSelected <=(3)) {
+                                    //return
+                                    // Padding(
+                                    //   padding: const EdgeInsets.all(20.0),
+                                    //   child: Text(
+                                    //     "Selecione um ou mais problemas",
+                                    //     style: TextStyle(fontSize: 20),
+                                    //   ),
+                                    // ),
+
+                                    // ToggleButtons(
+                                    //     children: options,
+                                    //     isSelected: _selectedVegetables),
+// ToggleButtons with a multiple selection.
+                                    //const SizedBox(height: 5),
+                                    // ToggleButtons(
+                                    //   onPressed: (int index) {
+                                    //     // All buttons are selectable.
+                                    //     setState(() {
+                                    //       _selectedVegetables[index] =
+                                    //           !_selectedVegetables[index];
+                                    //     });
+                                    //   },
+                                    //   borderRadius: const BorderRadius.all(
+                                    //       Radius.circular(8)),
+                                    //   selectedBorderColor:
+                                    //       Color.fromARGB(255, 255, 255, 255),
+                                    //   selectedColor: Colors.white,
+                                    //   fillColor: Color.fromARGB(255, 0, 0, 0),
+                                    //   color: Color.fromARGB(255, 0, 0, 0),
+                                    //   constraints: const BoxConstraints(
+                                    //     minHeight: 50.0,
+                                    //     minWidth: 110.0,
+                                    //   ),
+                                    //   isSelected: _selectedVegetables,
+                                    //   children: options,
+                                    // ),
+                                    // const SizedBox(height: 20),
+//até aqui
                                     TextFormField(
                                       controller: controller.commentController,
                                       maxLines: 4,
@@ -179,8 +227,8 @@ class _EvaluationPageState extends State<EvaluationPage> {
                                           begin: Alignment.topLeft,
                                           end: Alignment.bottomRight,
                                           colors: [
-                                            Colors.blue,
-                                            Colors.blue[200]!
+                                            Color.fromARGB(255, 33, 150, 243),
+                                            Color.fromRGBO(144, 202, 249, 1)!
                                           ],
                                         ),
                                         unselectedGradientColor: LinearGradient(

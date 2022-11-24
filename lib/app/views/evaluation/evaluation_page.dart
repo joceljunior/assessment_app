@@ -29,7 +29,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
     Text('Educação', style: TextStyle(fontSize: 15)),
     Text('Muito caro', style: TextStyle(fontSize: 15))
   ];
-  final List<bool> _selectedVegetables = <bool>[false, true, false];
+  final List<bool> _selectedVegetables = <bool>[false, false, false];
 
   @override
   void initState() {

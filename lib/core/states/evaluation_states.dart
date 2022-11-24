@@ -6,6 +6,10 @@ class Loading implements EvaluationState {}
 
 class SuccessPost implements EvaluationState {}
 
+class ShowOptionsWidget implements EvaluationState {}
+
+class HideOptionsWidget implements EvaluationState {}
+
 class Success implements EvaluationState {
   final List<Question> questions;
   Success({

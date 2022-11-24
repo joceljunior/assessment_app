@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import 'package:assessment_app/app/controllers/evaluation_controller.dart';
@@ -24,9 +25,9 @@ EvaluationController controller = EvaluationController();
 
 class _EvaluationPageState extends State<EvaluationPage> {
   List<Widget> options = <Widget>[
-    Text('Limpeza', style: TextStyle(fontSize: 20)),
-    Text('Educação', style: TextStyle(fontSize: 20)),
-    Text('Muito caro', style: TextStyle(fontSize: 20))
+    Text('Limpeza', style: TextStyle(fontSize: 15)),
+    Text('Educação', style: TextStyle(fontSize: 15)),
+    Text('Muito caro', style: TextStyle(fontSize: 15))
   ];
   final List<bool> _selectedVegetables = <bool>[false, true, false];
 
@@ -73,9 +74,20 @@ class _EvaluationPageState extends State<EvaluationPage> {
                 Container(
                   height: size.height * 0.6,
                   color: Color.fromARGB(255, 255, 255, 255),
-                  child: ValueListenableBuilder<EvaluationState>(
-                      valueListenable: controller,
-                      builder: (context, state, child) {
+                  child: BlocConsumer<EvaluationController, EvaluationState>(
+                      bloc: controller,
+                      listener: (context, state) {
+                        if (state is Success) {
+                          controller.listQuestions = state.questions;
+                        }
+                        if (state is ShowOptionsWidget) {
+                          controller.showOption = true;
+                        }
+                        if (state is HideOptionsWidget) {
+                          controller.showOption = false;
+                        }
+                      },
+                      builder: (context, state) {
                         if (state is Loading) {
                           return Center(child: CircularProgressIndicator());
                         }
@@ -86,167 +98,146 @@ class _EvaluationPageState extends State<EvaluationPage> {
                           );
                         }
 
-                        if (state is Success) {
-                          controller.listQuestions = state.questions;
-                          return CarouselSlider.builder(
-                              carouselController: controller.sliderController,
-                              options: CarouselOptions(
-                                aspectRatio: 16 / 20,
-                                viewportFraction: 0.9,
-                                initialPage: 0,
-                                enableInfiniteScroll: false,
-                                reverse: false,
-                                autoPlay: false,
-                                autoPlayCurve: Curves.elasticIn,
-                                enlargeCenterPage: true,
-                                scrollPhysics: NeverScrollableScrollPhysics(),
-                                onPageChanged: (index, reason) {
-                                  controller.index = index;
+                        return CarouselSlider.builder(
+                            carouselController: controller.sliderController,
+                            options: CarouselOptions(
+                              aspectRatio: 16 / 20,
+                              viewportFraction: 0.9,
+                              initialPage: 0,
+                              enableInfiniteScroll: false,
+                              reverse: false,
+                              autoPlay: false,
+                              autoPlayCurve: Curves.elasticIn,
+                              enlargeCenterPage: true,
+                              scrollPhysics: NeverScrollableScrollPhysics(),
+                              onPageChanged: (index, reason) {
+                                controller.index = index;
 
-                                  // if (controller.itemIndex <
-                                  //     controller.listEvaluations.length) {
-                                  //   getDefaultValues(index: controller.index);
-                                  // }
-                                },
-                                scrollDirection: Axis.horizontal,
-                              ),
-                              itemCount: state.questions.length,
-                              itemBuilder: (BuildContext context, int itemIndex,
-                                  int pageViewIndex) {
-                                controller.questionItem =
-                                    state.questions[itemIndex];
-                                controller.indexCurrent = itemIndex;
+                                // if (controller.itemIndex <
+                                //     controller.listEvaluations.length) {
+                                //   getDefaultValues(index: controller.index);
+                                // }
+                              },
+                              scrollDirection: Axis.horizontal,
+                            ),
+                            itemCount: controller.listQuestions.length,
+                            itemBuilder: (BuildContext context, int itemIndex,
+                                int pageViewIndex) {
+                              controller.questionItem =
+                                  controller.listQuestions[itemIndex];
+                              controller.indexCurrent = itemIndex;
 
-                                return Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Text(controller.questionItem.question,
-                                        style: TextStyle(fontSize: 20)),
-                                    RatingBar.builder(
-                                      initialRating: controller.answerSelected,
-                                      minRating: 0,
-                                      direction: Axis.horizontal,
-                                      allowHalfRating: true,
-                                      itemCount: 5,
-                                      glow: false, //brilho
-                                      itemSize: size.height * 0.08,
-                                      wrapAlignment: WrapAlignment.end,
-                                      itemBuilder: (context, _) => Icon(
-                                        Icons.star,
-                                        color: Colors.amber,
-                                      ),
-                                      onRatingUpdate: (rating) {
-                                        controller.answerSelected = rating;
-                                        if ((controller.answerSelected) > 3) {
-                                          controller.menorIgual = false;
-                                        } else {
-                                          setState(() {
-                                            controller.menorIgual = true;
-                                          });
-                                        }
-                                        print(rating);
+                              return Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Text(controller.questionItem.question,
+                                      style: TextStyle(fontSize: 20)),
+                                  RatingBar.builder(
+                                    initialRating: controller.answerSelected,
+                                    minRating: 0,
+                                    direction: Axis.horizontal,
+                                    allowHalfRating: true,
+                                    itemCount: 5,
+                                    glow: false, //brilho
+                                    itemSize: size.height * 0.08,
+                                    wrapAlignment: WrapAlignment.end,
+                                    itemBuilder: (context, _) => Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                    ),
+                                    onRatingUpdate: (double rating) {
+                                      controller.answerSelected = rating;
+                                      controller.showOptions();
+                                      print(rating);
+                                    },
+                                  ),
+                                  Visibility(
+                                      visible: controller.showOption,
+                                      child: Padding(
+                                          padding: const EdgeInsets.all(20.0),
+                                          child: Text(
+                                            "Selecione um ou mais problemas",
+                                            style: TextStyle(fontSize: 20),
+                                          ))),
+
+                                  const SizedBox(height: 5),
+                                  Visibility(
+                                    visible: controller.showOption,
+                                    child: ToggleButtons(
+                                      onPressed: (int index) {
+                                        // All buttons are selectable.
+                                        setState(() {
+                                          _selectedVegetables[index] =
+                                              !_selectedVegetables[index];
+                                        });
                                       },
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(80)),
+                                      selectedBorderColor:
+                                          Color.fromARGB(255, 255, 255, 255),
+                                      selectedColor: Colors.white,
+                                      fillColor: Color.fromARGB(255, 0, 0, 0),
+                                      color: Color.fromARGB(255, 0, 0, 0),
+                                      constraints: const BoxConstraints(
+                                        minHeight: 40.0,
+                                        minWidth: 80.0,
+                                      ),
+                                      isSelected: _selectedVegetables,
+                                      children: options,
                                     ),
-                                    Visibility(
-                                        visible: controller.menorIgual,
-                                        child: Padding(
-                                            padding: const EdgeInsets.all(20.0),
-                                            child: Text(
-                                              "Selecione um ou mais problemas",
-                                              style: TextStyle(fontSize: 20),
-                                            ))),
-
-                                    //if (controller.answerSelected <=(3)) {
-                                    //return
-                                    // Padding(
-                                    //   padding: const EdgeInsets.all(20.0),
-                                    //   child: Text(
-                                    //     "Selecione um ou mais problemas",
-                                    //     style: TextStyle(fontSize: 20),
-                                    //   ),
-                                    // ),
-
-                                    // ToggleButtons(
-                                    //     children: options,
-                                    //     isSelected: _selectedVegetables),
-// ToggleButtons with a multiple selection.
-                                    //const SizedBox(height: 5),
-                                    // ToggleButtons(
-                                    //   onPressed: (int index) {
-                                    //     // All buttons are selectable.
-                                    //     setState(() {
-                                    //       _selectedVegetables[index] =
-                                    //           !_selectedVegetables[index];
-                                    //     });
-                                    //   },
-                                    //   borderRadius: const BorderRadius.all(
-                                    //       Radius.circular(8)),
-                                    //   selectedBorderColor:
-                                    //       Color.fromARGB(255, 255, 255, 255),
-                                    //   selectedColor: Colors.white,
-                                    //   fillColor: Color.fromARGB(255, 0, 0, 0),
-                                    //   color: Color.fromARGB(255, 0, 0, 0),
-                                    //   constraints: const BoxConstraints(
-                                    //     minHeight: 50.0,
-                                    //     minWidth: 110.0,
-                                    //   ),
-                                    //   isSelected: _selectedVegetables,
-                                    //   children: options,
-                                    // ),
-                                    // const SizedBox(height: 20),
+                                  ),
+                                  const SizedBox(height: 20),
 //até aqui
-                                    TextFormField(
-                                      controller: controller.commentController,
-                                      maxLines: 4,
-                                      decoration: InputDecoration(
-                                        contentPadding: EdgeInsets.all(10.0),
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(5),
-                                          ),
+                                  TextFormField(
+                                    controller: controller.commentController,
+                                    maxLines: 4,
+                                    decoration: InputDecoration(
+                                      contentPadding: EdgeInsets.all(10.0),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(5),
                                         ),
-                                        hintStyle: TextStyle(
-                                          color: Colors.black45,
-                                        ),
-                                        hintText: 'Deixe um comentário',
+                                      ),
+                                      hintStyle: TextStyle(
+                                        color: Colors.black45,
+                                      ),
+                                      hintText: 'Deixe um comentário',
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0),
+                                    child: StepProgressIndicator(
+                                      totalSteps:
+                                          controller.listQuestions.length,
+                                      currentStep: controller.indexCurrent,
+                                      size: 8,
+                                      padding: 0,
+                                      selectedColor: Colors.yellow,
+                                      unselectedColor: Colors.cyan,
+                                      roundedEdges: Radius.circular(10),
+                                      selectedGradientColor: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          Color.fromARGB(255, 33, 150, 243),
+                                          Color.fromRGBO(144, 202, 249, 1)!
+                                        ],
+                                      ),
+                                      unselectedGradientColor: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          Colors.black45,
+                                          Colors.black38
+                                        ],
                                       ),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 8.0),
-                                      child: StepProgressIndicator(
-                                        totalSteps: state.questions.length,
-                                        currentStep: controller.indexCurrent,
-                                        size: 8,
-                                        padding: 0,
-                                        selectedColor: Colors.yellow,
-                                        unselectedColor: Colors.cyan,
-                                        roundedEdges: Radius.circular(10),
-                                        selectedGradientColor: LinearGradient(
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
-                                          colors: [
-                                            Color.fromARGB(255, 33, 150, 243),
-                                            Color.fromRGBO(144, 202, 249, 1)!
-                                          ],
-                                        ),
-                                        unselectedGradientColor: LinearGradient(
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
-                                          colors: [
-                                            Colors.black45,
-                                            Colors.black38
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                );
-                              });
-                        } else {
-                          return Container();
-                        }
+                                  )
+                                ],
+                              );
+                            });
                       }),
                 ),
                 Row(

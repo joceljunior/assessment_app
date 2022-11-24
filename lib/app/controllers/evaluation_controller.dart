@@ -4,12 +4,13 @@ import 'package:assessment_app/core/interfaces/i_evaluation_repository.dart';
 import 'package:assessment_app/core/interfaces/i_question_repository.dart';
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../core/exception/assessment_failures.dart';
 import '../../core/states/evaluation_states.dart';
 
-class EvaluationController extends ValueNotifier<EvaluationState> {
+class EvaluationController extends Cubit<EvaluationState> {
   EvaluationController() : super(Loading());
   IQuestionRespository repository = GetIt.I<IQuestionRespository>();
   IEvaluationRepository repositoryEvaluation = GetIt.I<IEvaluationRepository>();
@@ -25,33 +26,35 @@ class EvaluationController extends ValueNotifier<EvaluationState> {
   int indexCurrent = 0;
   bool returnQUestion = false;
   bool showButtonSend = true;
-
-  bool menorIgual = true; //caca
+  bool showOption = false;
 
   Future getQuestions() async {
-    sendState(Loading());
+    emit(Loading());
     try {
       var questions = await repository.getQuestions(customerId: customerId);
-      sendState(Success(questions: questions));
+      emit(Success(questions: questions));
     } on QuestionFailure catch (e) {
-      sendState(Error(message: e.message));
+      emit(Error(message: e.message));
     }
   }
 
   Future postEvaluations() async {
-    sendState(Loading());
+    emit(Loading());
     try {
       await repositoryEvaluation.postEvaluations(evaluations: listEvaluations);
     } on QuestionFailure catch (e) {
-      sendState(Error(message: e.message));
+      emit(Error(message: e.message));
     }
   }
 
-  sendState(EvaluationState state) {
-    value = state;
+  void showOptions() {
+    if (answerSelected <= 3) {
+      emit(ShowOptionsWidget());
+    } else {
+      emit(HideOptionsWidget());
+    }
   }
 
-  @override
   void dispose() {
     listEvaluations = [];
     listQuestions = [];
@@ -64,6 +67,5 @@ class EvaluationController extends ValueNotifier<EvaluationState> {
     indexCurrent = 0;
     returnQUestion = false;
     showButtonSend = true;
-    super.dispose();
   }
 }

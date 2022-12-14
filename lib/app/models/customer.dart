@@ -4,10 +4,12 @@ class Customer {
   final int id;
   final String name;
   final String url;
+  final int idSession;
   Customer({
     required this.id,
     required this.name,
     required this.url,
+    required this.idSession,
   });
 
   Map<String, dynamic> toMap() {
@@ -16,6 +18,7 @@ class Customer {
     result.addAll({'id': id});
     result.addAll({'name': name});
     result.addAll({'url': url});
+    result.addAll({'id_session': idSession});
 
     return result;
   }
@@ -25,6 +28,7 @@ class Customer {
       id: map['id']?.toInt() ?? 0,
       name: map['name'] ?? '',
       url: map['url'] ?? '',
+      idSession: map['id_session']?.toInt() ?? 0,
     );
   }
 

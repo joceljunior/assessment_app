@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_function_literals_in_foreach_calls
+
 import 'package:assessment_app/app/models/evaluation.dart';
 import 'package:assessment_app/app/models/question.dart';
 import 'package:assessment_app/core/interfaces/i_evaluation_repository.dart';
@@ -27,6 +29,7 @@ class EvaluationController extends Cubit<EvaluationState> {
   bool returnQUestion = false;
   bool showButtonSend = true;
   bool showOption = false;
+  List<bool> selectedOptions = [];
 
   Future getQuestions() async {
     emit(Loading());
@@ -48,7 +51,10 @@ class EvaluationController extends Cubit<EvaluationState> {
   }
 
   void showOptions() {
-    if (answerSelected <= 3) {
+    if (answerSelected <= 3 && questionItem.options != null) {
+      questionItem.options!.forEach(
+        (element) => selectedOptions.add(false),
+      );
       emit(ShowOptionsWidget());
     } else {
       emit(HideOptionsWidget());

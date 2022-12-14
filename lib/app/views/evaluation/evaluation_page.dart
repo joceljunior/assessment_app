@@ -1,17 +1,13 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-
-import 'package:assessment_app/app/controllers/evaluation_controller.dart';
-import 'package:assessment_app/app/models/evaluation.dart';
-import 'package:assessment_app/core/states/evaluation_states.dart';
-import 'package:assessment_app/core/widgets/app_bar_logo_widget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
-import '../../models/question.dart';
+import '../../../core/states/evaluation_states.dart';
+import '../../controllers/evaluation_controller.dart';
+import '../../models/evaluation.dart';
 
 class EvaluationPage extends StatefulWidget {
   final String? customerId;
@@ -29,7 +25,6 @@ class _EvaluationPageState extends State<EvaluationPage> {
     Text('Educação', style: TextStyle(fontSize: 15)),
     Text('Muito caro', style: TextStyle(fontSize: 15))
   ];
-  final List<bool> _selectedVegetables = <bool>[false, false, false];
 
   @override
   void initState() {
@@ -168,8 +163,9 @@ class _EvaluationPageState extends State<EvaluationPage> {
                                       onPressed: (int index) {
                                         // All buttons are selectable.
                                         setState(() {
-                                          _selectedVegetables[index] =
-                                              !_selectedVegetables[index];
+                                          controller.selectedOptions[index] =
+                                              !controller
+                                                  .selectedOptions[index];
                                         });
                                       },
                                       borderRadius: const BorderRadius.all(
@@ -183,7 +179,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
                                         minHeight: 40.0,
                                         minWidth: 80.0,
                                       ),
-                                      isSelected: _selectedVegetables,
+                                      isSelected: controller.selectedOptions,
                                       children: options,
                                     ),
                                   ),
@@ -222,7 +218,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
                                         end: Alignment.bottomRight,
                                         colors: [
                                           Color.fromARGB(255, 33, 150, 243),
-                                          Color.fromRGBO(144, 202, 249, 1)!
+                                          Color.fromRGBO(144, 202, 249, 1)
                                         ],
                                       ),
                                       unselectedGradientColor: LinearGradient(

@@ -5,25 +5,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SplashController extends ValueNotifier<SplashState> {
-  SplashController() : super(Loading());
+class SplashController {
   ICustomerRepository repository = GetIt.I<ICustomerRepository>();
 
   var customerId = 0;
+  final state = ValueNotifier<SplashState>(Loading());
 
   Future getCustomer({required String url}) async {
-    sendState(Loading());
+    state.value = Loading();
     try {
       final db = await SharedPreferences.getInstance();
       var customer = await repository.getCustomer(url: url);
       await db.setInt('session', customer.idSession);
-      sendState(Success(customer: customer));
+      state.value = Success(customer: customer);
     } on CustomerFailure catch (e) {
-      sendState(Error(message: e.message));
+      state.value = Error(message: e.message);
     }
-  }
-
-  sendState(SplashState state) {
-    value = state;
   }
 }

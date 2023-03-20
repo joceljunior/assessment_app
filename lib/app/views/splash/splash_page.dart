@@ -16,12 +16,13 @@ class SplashPage extends StatefulWidget {
 bool showLogo = false;
 bool showButton = false;
 bool showNameCustomer = false;
-final SplashController controller = SplashController();
+final controller = SplashController();
 
 class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     var completedUrl = window.location.href;
+
     var url = completedUrl.substring(
         completedUrl.indexOf('#') + 2, completedUrl.length);
     controller.getCustomer(url: url);
@@ -135,7 +136,7 @@ class _SplashPageState extends State<SplashPage> {
 
     var logoWidth = _size.width * (0.8);
     return ValueListenableBuilder(
-      valueListenable: controller,
+      valueListenable: controller.state,
       builder: (context, state, child) {
         print(state.toString());
         if (state is Loading) {

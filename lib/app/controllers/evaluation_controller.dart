@@ -29,7 +29,6 @@ class EvaluationController extends Cubit<EvaluationState> {
   bool returnQUestion = false;
   bool showButtonSend = true;
   bool showOption = false;
-  List<bool> selectedOptions = [];
 
   Future getQuestions() async {
     emit(Loading());
@@ -51,10 +50,9 @@ class EvaluationController extends Cubit<EvaluationState> {
   }
 
   void showOptions() {
-    if (answerSelected <= 3 && questionItem.options != null) {
-      questionItem.options!.forEach(
-        (element) => selectedOptions.add(false),
-      );
+    if (answerSelected <= 3 &&
+        questionItem.options != null &&
+        questionItem.options!.isNotEmpty) {
       emit(ShowOptionsWidget());
     } else {
       emit(HideOptionsWidget());

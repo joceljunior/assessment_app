@@ -1,3 +1,4 @@
+import 'package:assessment_app/core/constants.dart';
 import 'package:assessment_app/core/exception/assessment_failures.dart';
 import 'package:assessment_app/core/interfaces/i_customer_repository.dart';
 
@@ -10,11 +11,9 @@ class CustomerRepository implements ICustomerRepository {
   @override
   Future<Customer> getCustomer({required String url}) async {
     try {
-      var urlApi =
-          'https://assessmentforlearning.herokuapp.com/getCustomerUrl/$url';
+      var urlApi = '${Constants.baseurl}getCustomerUrl/$url';
       var response = await httpClient.get(urlApi);
-      var customer =
-          (response.data as List).map((e) => Customer.fromJson(e)).first;
+      var customer = Customer.fromJson(response.data);
       return customer;
     } catch (e) {
       throw CustomerFailure(message: 'Houve uma falha');

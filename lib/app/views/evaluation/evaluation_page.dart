@@ -1,3 +1,4 @@
+import 'package:assessment_app/app/views/evaluation/widgets/options_widget.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -67,7 +68,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
                   color: Colors.red,
                 ),
                 Container(
-                  height: size.height * 0.6,
+                  height: size.height * 0.5,
                   color: Color.fromARGB(255, 255, 255, 255),
                   child: BlocConsumer<EvaluationController, EvaluationState>(
                       bloc: controller,
@@ -96,7 +97,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
                         return CarouselSlider.builder(
                             carouselController: controller.sliderController,
                             options: CarouselOptions(
-                              aspectRatio: 16 / 20,
+                              aspectRatio: 16 / 15,
                               viewportFraction: 0.9,
                               initialPage: 0,
                               enableInfiniteScroll: false,
@@ -148,39 +149,26 @@ class _EvaluationPageState extends State<EvaluationPage> {
                                     },
                                   ),
                                   Visibility(
-                                      visible: controller.showOption,
-                                      child: Padding(
-                                          padding: const EdgeInsets.all(20.0),
-                                          child: Text(
-                                            "Selecione um ou mais problemas",
-                                            style: TextStyle(fontSize: 20),
-                                          ))),
-
-                                  const SizedBox(height: 5),
-                                  Visibility(
                                     visible: controller.showOption,
-                                    child: ToggleButtons(
-                                      onPressed: (int index) {
-                                        // All buttons are selectable.
-                                        setState(() {
-                                          controller.selectedOptions[index] =
-                                              !controller
-                                                  .selectedOptions[index];
-                                        });
-                                      },
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(80)),
-                                      selectedBorderColor:
-                                          Color.fromARGB(255, 255, 255, 255),
-                                      selectedColor: Colors.white,
-                                      fillColor: Color.fromARGB(255, 0, 0, 0),
-                                      color: Color.fromARGB(255, 0, 0, 0),
-                                      constraints: const BoxConstraints(
-                                        minHeight: 40.0,
-                                        minWidth: 80.0,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Text(
+                                        "Selecione um ou mais problemas",
+                                        style: TextStyle(fontSize: 20),
                                       ),
-                                      isSelected: controller.selectedOptions,
-                                      children: options,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Container(
+                                    //color: Colors.amber,
+                                    height: size.height * 0.1,
+                                    width: size.width * 0.4,
+                                    child: Visibility(
+                                      visible: controller.showOption,
+                                      child: OptionsWidget(
+                                        options:
+                                            controller.questionItem.options!,
+                                      ),
                                     ),
                                   ),
                                   const SizedBox(height: 20),

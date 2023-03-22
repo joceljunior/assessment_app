@@ -11,6 +11,7 @@ class AppWidget extends StatelessWidget {
       routerConfig: RouterAssessment.routes,
       title: 'Assessment',
       theme: ThemeData(
+        fontFamily: 'ProductSans',
         primarySwatch: Colors.blue,
       ),
     );

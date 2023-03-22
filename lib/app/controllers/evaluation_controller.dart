@@ -1,5 +1,4 @@
 // ignore_for_file: avoid_function_literals_in_foreach_calls
-
 import 'package:assessment_app/app/models/evaluation.dart';
 import 'package:assessment_app/app/models/question.dart';
 import 'package:assessment_app/core/interfaces/i_evaluation_repository.dart';
@@ -14,8 +13,8 @@ import '../../core/states/evaluation_states.dart';
 
 class EvaluationController extends Cubit<EvaluationState> {
   EvaluationController() : super(Loading());
-  IQuestionRespository repository = GetIt.I<IQuestionRespository>();
-  IEvaluationRepository repositoryEvaluation = GetIt.I<IEvaluationRepository>();
+  IQuestionRespository questionRepository = GetIt.I<IQuestionRespository>();
+  IEvaluationRepository evaluationRepository = GetIt.I<IEvaluationRepository>();
 
   List<Evaluation> listEvaluations = [];
   List<Question> listQuestions = [];
@@ -26,14 +25,15 @@ class EvaluationController extends Cubit<EvaluationState> {
   CarouselController sliderController = CarouselController();
   int index = 0;
   int indexCurrent = 0;
-  bool returnQUestion = false;
+  bool returnQuestion = false;
   bool showButtonSend = true;
   bool showOption = false;
 
   Future getQuestions() async {
     emit(Loading());
+
     try {
-      var questions = await repository.getQuestions(customerId: customerId);
+      var questions = await questionRepository.getQuestions(customerId: customerId);
       emit(Success(questions: questions));
     } on QuestionFailure catch (e) {
       emit(Error(message: e.message));
@@ -43,16 +43,14 @@ class EvaluationController extends Cubit<EvaluationState> {
   Future postEvaluations() async {
     emit(Loading());
     try {
-      await repositoryEvaluation.postEvaluations(evaluations: listEvaluations);
+      await evaluationRepository.postEvaluations(evaluations: listEvaluations);
     } on QuestionFailure catch (e) {
       emit(Error(message: e.message));
     }
   }
 
   void showOptions() {
-    if (answerSelected <= 3 &&
-        questionItem.options != null &&
-        questionItem.options!.isNotEmpty) {
+    if (answerSelected <= 3 && questionItem.options != null && questionItem.options!.isNotEmpty) {
       emit(ShowOptionsWidget());
     } else {
       emit(HideOptionsWidget());
@@ -69,7 +67,7 @@ class EvaluationController extends Cubit<EvaluationState> {
     sliderController = CarouselController();
     index = 0;
     indexCurrent = 0;
-    returnQUestion = false;
+    returnQuestion = false;
     showButtonSend = true;
   }
 }

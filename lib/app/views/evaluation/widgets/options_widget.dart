@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../../models/option.dart';
 
 class OptionsWidget extends StatefulWidget {
@@ -11,37 +10,64 @@ class OptionsWidget extends StatefulWidget {
 }
 
 class _OptionsWidgetState extends State<OptionsWidget> {
+  // https://karthikponnam.medium.com/flutter-multi-select-choicechip-244ea016b6fa
+  List<bool> problemSeleted = [];
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: widget.options.length,
-        itemBuilder: ((context, index) {
+    return Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: List<Widget>.generate(widget.options.length, (int index) {
           var item = widget.options[index];
-          return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  padding:
-                      MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(5)),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                      side: BorderSide(color: Colors.transparent),
-                    ),
-                  ),
-                  // textStyle: MaterialStateProperty.all(
-                  //   TextStyle(color: Colors.black),
-                  // ),
-                  backgroundColor: MaterialStateProperty.all(
-                      Color.fromARGB(255, 199, 193, 193)),
+          problemSeleted.add(false);
+
+          return ChoiceChip(
+            label: Padding(
+              padding: EdgeInsets.all(5),
+              child: Text(
+                item.name,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
-                child: Text(item.name),
-                onPressed: () {},
-              ));
-        }),
-      ),
-    );
+              ),
+            ),
+            selected: problemSeleted[index], // _selectedAnimalIndex == index,
+            onSelected: (bool selected) {
+              setState(() {
+                problemSeleted[index] = selected;
+              });
+            },
+            backgroundColor: Colors.grey.shade50,
+            selectedColor: Colors.orange,
+          );
+        }).toList()
+
+        // ListView.builder(
+        //   shrinkWrap: true,
+        //   physics: NeverScrollableScrollPhysics(),
+        //   // scrollDirection: Axis.horizontal,
+        //   itemCount: widget.options.length,
+        //   itemBuilder: ((context, index) {
+        //     var item = widget.options[index];
+        //     return Container(
+        //       padding: EdgeInsets.all(2.0),
+        //       child: ChoiceChip(
+        //         label: Text(
+        //           item.name,
+        //           style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.normal,
+        //           ),
+        //         ),
+        //         selected: false,
+        //         onSelected: (selected) {},
+        //       ),
+        //     );
+        //   }),
+        // ),
+        // ],
+
+        );
   }
 }

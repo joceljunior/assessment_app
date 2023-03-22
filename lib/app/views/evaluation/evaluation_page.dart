@@ -18,33 +18,29 @@ class EvaluationPage extends StatefulWidget {
   State<EvaluationPage> createState() => _EvaluationPageState();
 }
 
-EvaluationController controller = EvaluationController();
+EvaluationController evaluationController = EvaluationController();
 
 class _EvaluationPageState extends State<EvaluationPage> {
-  List<Widget> options = <Widget>[
-    Text('Limpeza', style: TextStyle(fontSize: 15)),
-    Text('Educação', style: TextStyle(fontSize: 15)),
-    Text('Muito caro', style: TextStyle(fontSize: 15))
-  ];
-
   @override
   void initState() {
-    controller.indexCurrent = 0;
-    controller.customerId =
-        int.parse(widget.customerId == null ? '0' : widget.customerId!);
-    controller.getQuestions();
+    evaluationController.indexCurrent = 0;
+    evaluationController.customerId = int.parse(widget.customerId == null ? '0' : widget.customerId!);
+    evaluationController.getQuestions();
+
     super.initState();
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    evaluationController.dispose();
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+
     return Scaffold(
       body: GestureDetector(
         onTap: () {
@@ -65,22 +61,25 @@ class _EvaluationPageState extends State<EvaluationPage> {
                 // ),
                 Container(
                   height: size.height * 0.2,
-                  color: Colors.red,
+                  color: Colors.grey.shade100,
                 ),
+
                 Container(
                   height: size.height * 0.5,
                   color: Color.fromARGB(255, 255, 255, 255),
                   child: BlocConsumer<EvaluationController, EvaluationState>(
-                      bloc: controller,
+                      bloc: evaluationController,
                       listener: (context, state) {
                         if (state is Success) {
-                          controller.listQuestions = state.questions;
+                          evaluationController.listQuestions = state.questions;
                         }
+
                         if (state is ShowOptionsWidget) {
-                          controller.showOption = true;
+                          evaluationController.showOption = true;
                         }
+
                         if (state is HideOptionsWidget) {
-                          controller.showOption = false;
+                          evaluationController.showOption = false;
                         }
                       },
                       builder: (context, state) {
@@ -95,7 +94,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
                         }
 
                         return CarouselSlider.builder(
-                            carouselController: controller.sliderController,
+                            carouselController: evaluationController.sliderController,
                             options: CarouselOptions(
                               aspectRatio: 16 / 15,
                               viewportFraction: 0.9,
@@ -107,8 +106,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
                               enlargeCenterPage: true,
                               scrollPhysics: NeverScrollableScrollPhysics(),
                               onPageChanged: (index, reason) {
-                                controller.index = index;
-
+                                evaluationController.index = index;
                                 // if (controller.itemIndex <
                                 //     controller.listEvaluations.length) {
                                 //   getDefaultValues(index: controller.index);
@@ -116,21 +114,19 @@ class _EvaluationPageState extends State<EvaluationPage> {
                               },
                               scrollDirection: Axis.horizontal,
                             ),
-                            itemCount: controller.listQuestions.length,
-                            itemBuilder: (BuildContext context, int itemIndex,
-                                int pageViewIndex) {
-                              controller.questionItem =
-                                  controller.listQuestions[itemIndex];
-                              controller.indexCurrent = itemIndex;
+                            itemCount: evaluationController.listQuestions.length,
+                            itemBuilder: (BuildContext context, int itemIndex, int pageViewIndex) {
+                              evaluationController.questionItem = evaluationController.listQuestions[itemIndex];
+                              evaluationController.indexCurrent = itemIndex;
 
                               return Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
-                                  Text(controller.questionItem.question,
-                                      style: TextStyle(fontSize: 20)),
+                                  Text(evaluationController.questionItem.question, style: TextStyle(fontSize: 20)),
+
+                                  // Starts Rating
                                   RatingBar.builder(
-                                    initialRating: controller.answerSelected,
+                                    // initialRating: evaluationController.answerSelected,
                                     minRating: 0,
                                     direction: Axis.horizontal,
                                     allowHalfRating: true,
@@ -143,13 +139,14 @@ class _EvaluationPageState extends State<EvaluationPage> {
                                       color: Colors.amber,
                                     ),
                                     onRatingUpdate: (double rating) {
-                                      controller.answerSelected = rating;
-                                      controller.showOptions();
-                                      print(rating);
+                                      evaluationController.answerSelected = rating;
+                                      evaluationController.showOptions();
                                     },
                                   ),
+
+                                  // Problems options
                                   Visibility(
-                                    visible: controller.showOption,
+                                    visible: evaluationController.showOption,
                                     child: Padding(
                                       padding: const EdgeInsets.all(20.0),
                                       child: Text(
@@ -158,23 +155,19 @@ class _EvaluationPageState extends State<EvaluationPage> {
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(height: 5),
-                                  Container(
-                                    //color: Colors.amber,
-                                    height: size.height * 0.1,
-                                    width: size.width * 0.4,
-                                    child: Visibility(
-                                      visible: controller.showOption,
-                                      child: OptionsWidget(
-                                        options:
-                                            controller.questionItem.options!,
-                                      ),
+                                  // SizedBox(height: 5),
+
+                                  Visibility(
+                                    visible: evaluationController.showOption,
+                                    child: OptionsWidget(
+                                      options: evaluationController.questionItem.options!,
                                     ),
                                   ),
+
                                   const SizedBox(height: 20),
 //até aqui
                                   TextFormField(
-                                    controller: controller.commentController,
+                                    controller: evaluationController.commentController,
                                     maxLines: 4,
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.all(10.0),
@@ -189,13 +182,12 @@ class _EvaluationPageState extends State<EvaluationPage> {
                                       hintText: 'Deixe um comentário',
                                     ),
                                   ),
+
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 8.0),
+                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
                                     child: StepProgressIndicator(
-                                      totalSteps:
-                                          controller.listQuestions.length,
-                                      currentStep: controller.indexCurrent,
+                                      totalSteps: evaluationController.listQuestions.length,
+                                      currentStep: evaluationController.indexCurrent,
                                       size: 8,
                                       padding: 0,
                                       selectedColor: Colors.yellow,
@@ -204,18 +196,12 @@ class _EvaluationPageState extends State<EvaluationPage> {
                                       selectedGradientColor: LinearGradient(
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomRight,
-                                        colors: [
-                                          Color.fromARGB(255, 33, 150, 243),
-                                          Color.fromRGBO(144, 202, 249, 1)
-                                        ],
+                                        colors: [Color.fromARGB(255, 33, 150, 243), Color.fromRGBO(144, 202, 249, 1)],
                                       ),
                                       unselectedGradientColor: LinearGradient(
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomRight,
-                                        colors: [
-                                          Colors.black45,
-                                          Colors.black38
-                                        ],
+                                        colors: [Colors.black45, Colors.black38],
                                       ),
                                     ),
                                   )
@@ -225,15 +211,12 @@ class _EvaluationPageState extends State<EvaluationPage> {
                       }),
                 ),
                 Row(
-                  mainAxisAlignment: /*controller.index*/ 0 == 0
-                      ? MainAxisAlignment.center
-                      : MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: /*controller.index*/ 0 == 0 ? MainAxisAlignment.center : MainAxisAlignment.spaceAround,
                   children: [
                     Visibility(
                       visible: /*controller.index != 0*/ false,
                       child: Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: size.height * 0.08),
+                        padding: EdgeInsets.symmetric(vertical: size.height * 0.08),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.symmetric(
@@ -242,9 +225,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
                               ),
                               elevation: 5,
                               backgroundColor: Colors.white24,
-                              side: BorderSide(
-                                  width: 1,
-                                  color: Color.fromARGB(78, 0, 0, 0))),
+                              side: BorderSide(width: 1, color: Color.fromARGB(78, 0, 0, 0))),
                           child: Text(
                             'VOLTAR',
                             style: TextStyle(
@@ -253,72 +234,66 @@ class _EvaluationPageState extends State<EvaluationPage> {
                             ),
                           ),
                           onPressed: () {
-                            controller.returnQUestion = true;
-                            controller.answerSelected = 0;
-                            controller.sliderController.previousPage();
+                            evaluationController.returnQuestion = true;
+                            evaluationController.answerSelected = 0;
+                            evaluationController.sliderController.previousPage();
                           },
                         ),
                       ),
                     ),
                     Visibility(
-                      visible: controller.showButtonSend,
+                      visible: evaluationController.showButtonSend,
                       child: Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: size.height * 0.08),
+                        padding: EdgeInsets.symmetric(vertical: size.height * 0.08),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.symmetric(
-                                vertical: size.height * 0.04,
+                                vertical: size.height * 0.03,
                                 horizontal: size.height * 0.07,
                               ),
                               elevation: 5,
-                              backgroundColor:
-                                  Color.fromARGB(255, 27, 115, 231),
-                              side: BorderSide(
-                                  width: 1,
-                                  color: Color.fromARGB(78, 0, 0, 0))),
+                              backgroundColor: Color.fromARGB(255, 27, 115, 231),
+                              side: BorderSide(width: 1, color: Color.fromARGB(78, 0, 0, 0))),
                           child: Text(
                             'AVALIAR',
                             style: TextStyle(
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           onPressed: () async {
-                            if (controller.answerSelected != 0) {
+                            if (evaluationController.answerSelected != 0) {
                               var value = Evaluation(
-                                controller.questionItem.id,
-                                controller.customerId,
-                                controller.answerSelected,
-                                controller.commentController.text,
+                                evaluationController.questionItem.id,
+                                evaluationController.customerId,
+                                evaluationController.answerSelected,
+                                evaluationController.commentController.text,
                               );
-                              if (controller.returnQUestion) {
+
+                              if (evaluationController.returnQuestion) {
                                 // var itemSelected = controller.listEvaluations
                                 //     .firstWhere((element) =>
                                 //         element.idQuestion == value.idQuestion);
                                 // controller.listEvaluations.remove(itemSelected);
-                                controller.listEvaluations
-                                    .setAll(controller.index, [value]);
+                                evaluationController.listEvaluations.setAll(evaluationController.index, [value]);
                               } else {
-                                controller.listEvaluations.add(value);
+                                evaluationController.listEvaluations.add(value);
                               }
-                              controller.commentController.clear();
-                              controller.returnQUestion = false;
-                              controller.answerSelected = 0;
-                              if (controller.listQuestions.length - 1 >
-                                  controller.index) {
-                                controller.sliderController.nextPage();
+                              evaluationController.commentController.clear();
+                              evaluationController.returnQuestion = false;
+                              evaluationController.answerSelected = 0;
+                              if (evaluationController.listQuestions.length - 1 > evaluationController.index) {
+                                evaluationController.sliderController.nextPage();
                               } else {
                                 setState(() {
-                                  controller.showButtonSend = false;
-                                  controller.indexCurrent++;
+                                  evaluationController.showButtonSend = false;
+                                  evaluationController.indexCurrent++;
                                 });
-                                await controller.postEvaluations();
-                                GoRouter.of(context).go(
-                                    '/checkout/${controller.listQuestions.length}/${widget.customerId}');
+                                await evaluationController.postEvaluations();
+                                GoRouter.of(context).go('/checkout/${evaluationController.listQuestions.length}/${widget.customerId}');
                               }
                             } else {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 content: Text('Selecione uma nota'),
                                 duration: Duration(seconds: 2),
                                 backgroundColor: Colors.red,
@@ -339,8 +314,8 @@ class _EvaluationPageState extends State<EvaluationPage> {
   }
 
   getDefaultValues({required int index}) {
-    var existItem = controller.listEvaluations[index];
-    controller.answerSelected = existItem.answer;
-    controller.commentController.text = existItem.comment;
+    var existItem = evaluationController.listEvaluations[index];
+    evaluationController.answerSelected = existItem.answer;
+    evaluationController.commentController.text = existItem.comment;
   }
 }

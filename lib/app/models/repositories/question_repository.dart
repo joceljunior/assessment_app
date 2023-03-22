@@ -12,8 +12,8 @@ class QuestionRepository implements IQuestionRespository {
   @override
   Future<List<Question>> getQuestions({required int customerId}) async {
     try {
-      var url = '${Constants.baseurl}getQuestions/$customerId';
-      var response = await httpClient.get(url);
+      var urlApi = '${Constants.baseurl}getQuestions/$customerId';
+      var response = await httpClient.get(urlApi);
       var data = response.data;
       var questions = (data as List).map((e) => Question.fromJson(e)).toList();
 

@@ -9,12 +9,15 @@ import '../../../core/exception/assessment_failures.dart';
 
 class EvaluationRepository implements IEvaluationRepository {
   final Dio httpClient = Dio();
+
   @override
   Future<bool> postEvaluations({required List<Evaluation> evaluations}) async {
     try {
       var json = jsonEncode(evaluations);
       var urlApi = '${Constants.baseurl}postEvaluation';
+      // ignore: unused_local_variable
       var response = await httpClient.post(urlApi, data: json);
+
       return true;
     } catch (e) {
       throw EvaluationFailure(message: 'Houve uma falha');

@@ -23,8 +23,7 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     var completedUrl = window.location.href;
 
-    var url = completedUrl.substring(
-        completedUrl.indexOf('#') + 2, completedUrl.length);
+    var url = completedUrl.substring(completedUrl.indexOf('#') + 2, completedUrl.length);
     controller.getCustomer(url: url);
     showAnimations();
     super.initState();
@@ -115,10 +114,7 @@ class _SplashPageState extends State<SplashPage> {
               child: Center(
                 child: Text(
                   'Iniciar',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                      color: Colors.white),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24, color: Colors.white),
                 ),
               ),
             ),
@@ -132,9 +128,9 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Widget buildFadeNameCustomer(BuildContext context) {
-    var _size = MediaQuery.of(context).size;
+    // var _size = MediaQuery.of(context).size;
+    // var logoWidth = _size.width * (0.8);
 
-    var logoWidth = _size.width * (0.8);
     return ValueListenableBuilder(
       valueListenable: controller.state,
       builder: (context, state, child) {
@@ -167,8 +163,7 @@ class _SplashPageState extends State<SplashPage> {
                       ),
                       Text(
                         state.customer.name,
-                        style: TextStyle(
-                            fontSize: 22, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),

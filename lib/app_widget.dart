@@ -7,8 +7,9 @@ class AppWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: RouterAssessment.routes,
+    return MaterialApp(
+      onGenerateRoute: RouterAssessment().generateRoute,
+      initialRoute: '/',
       title: 'Assessment',
       theme: ThemeData(
         fontFamily: 'ProductSans',

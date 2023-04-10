@@ -1,34 +1,28 @@
-import 'package:assessment_app/app/views/checkout/checkout_page.dart';
-import 'package:assessment_app/app/views/evaluation/evaluation_page.dart';
-import 'package:assessment_app/app/views/splash/splash_page.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+
+import '../app/views/evaluation/evaluation_page.dart';
+import '../app/views/splash/splash_page.dart';
 
 class RouterAssessment {
-  static GoRouter routes = GoRouter(
-    routes: [
-      GoRoute(
-        path: '/',
-        builder: (BuildContext context, GoRouterState state) {
-          return SplashPage();
-        },
-      ),
-      GoRoute(
-        path: '/evaluation/:customerId',
-        builder: (BuildContext context, GoRouterState state) {
-          return EvaluationPage(customerId: state.params['customerId']);
-        },
-      ),
-      GoRoute(
-        path: '/checkout/:totalSteps/:customerId',
-        builder: (BuildContext context, GoRouterState state) {
-          return CheckoutPage(
-            totalSteps: state.params['totalSteps']!,
-            customerId: state.params['customerId']!,
-          );
-        },
-      ),
-    ],
-    errorBuilder: (context, state) => SplashPage(),
-  );
+  Route<dynamic> generateRoute(RouteSettings settings) {
+    var args = settings.arguments;
+
+    switch (settings.name) {
+      case '/':
+        return MaterialPageRoute(
+          builder: (_) => SplashPage(),
+        );
+
+      case '/evaluation/:customerId':
+        var customerId = args as String;
+        return MaterialPageRoute(
+          builder: (_) => EvaluationPage(customerId: customerId),
+        );
+
+      default:
+        return MaterialPageRoute(
+          builder: (_) => SplashPage(),
+        );
+    }
+  }
 }

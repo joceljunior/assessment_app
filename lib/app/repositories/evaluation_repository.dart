@@ -1,14 +1,15 @@
 import 'dart:convert';
 
 import 'package:assessment_app/app/models/evaluation.dart';
-import 'package:assessment_app/core/interfaces/i_evaluation_repository.dart';
+import 'package:assessment_app/app/repositories/interfaces/i_evaluation_repository.dart';
 import 'package:dio/dio.dart';
+import 'package:get_it/get_it.dart';
 
-import '../../../core/constants.dart';
-import '../../../core/exception/assessment_failures.dart';
+import '../../core/constants.dart';
+import '../../core/exception/assessment_failures.dart';
 
 class EvaluationRepository implements IEvaluationRepository {
-  final Dio httpClient = Dio();
+  final Dio httpClient = GetIt.I<Dio>();
 
   @override
   Future<bool> postEvaluations({required List<Evaluation> evaluations}) async {

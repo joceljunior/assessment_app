@@ -1,10 +1,7 @@
 import 'dart:html';
-
-import 'package:assessment_app/app/controllers/splash_controller.dart';
+import 'package:assessment_app/app/views/splash/bloc/splash_bloc.dart';
+import 'package:assessment_app/app/views/splash/bloc/splash_states.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
-import '../../../core/states/splash_states.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
@@ -16,21 +13,25 @@ class SplashPage extends StatefulWidget {
 bool showLogo = false;
 bool showButton = false;
 bool showNameCustomer = false;
-final controller = SplashController();
+final SplashBloc bloc = SplashBloc();
 
 class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     var completedUrl = window.location.href;
 
-    var url = completedUrl.substring(completedUrl.indexOf('#') + 2, completedUrl.length);
-    controller.getCustomer(url: url);
+    var url = completedUrl.substring(
+        completedUrl.indexOf('#') + 2, completedUrl.length);
+    bloc.getCustomer(url: url);
     showAnimations();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    // bloc.state.addListener(() {
+    //   print(bloc.state.toString());
+    // });
     var size = MediaQuery.of(context).size;
     return Scaffold(
       body: Container(
@@ -114,12 +115,15 @@ class _SplashPageState extends State<SplashPage> {
               child: Center(
                 child: Text(
                   'Iniciar',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24, color: Colors.white),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
+                      color: Colors.white),
                 ),
               ),
             ),
             onTap: () {
-              GoRouter.of(context).go('/evaluation/${controller.customerId}');
+              Navigator.of(context).pushNamed('/evaluation/${bloc.customerId}');
             },
           ),
         );
@@ -132,9 +136,8 @@ class _SplashPageState extends State<SplashPage> {
     // var logoWidth = _size.width * (0.8);
 
     return ValueListenableBuilder(
-      valueListenable: controller.state,
+      valueListenable: bloc.state,
       builder: (context, state, child) {
-        print(state.toString());
         if (state is Loading) {
           return Center(child: CircularProgressIndicator());
         }
@@ -146,7 +149,7 @@ class _SplashPageState extends State<SplashPage> {
         }
 
         if (state is Success) {
-          controller.customerId = state.customer.id;
+          bloc.customerId = state.customer.id;
           return Expanded(
             child: TweenAnimationBuilder(
               tween: Tween<double>(begin: 0, end: 1),
@@ -163,7 +166,8 @@ class _SplashPageState extends State<SplashPage> {
                       ),
                       Text(
                         state.customer.name,
-                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),

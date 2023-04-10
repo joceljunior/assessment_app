@@ -1,73 +1,39 @@
 // ignore_for_file: avoid_function_literals_in_foreach_calls
+import 'package:assessment_app/app/controllers/interfaces/i_evaluation_controller.dart';
 import 'package:assessment_app/app/models/evaluation.dart';
 import 'package:assessment_app/app/models/question.dart';
-import 'package:assessment_app/core/interfaces/i_evaluation_repository.dart';
-import 'package:assessment_app/core/interfaces/i_question_repository.dart';
-import 'package:carousel_slider/carousel_controller.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:assessment_app/app/repositories/interfaces/i_evaluation_repository.dart';
+import 'package:assessment_app/app/repositories/interfaces/i_question_repository.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../core/exception/assessment_failures.dart';
-import '../../core/states/evaluation_states.dart';
 
-class EvaluationController extends Cubit<EvaluationState> {
-  EvaluationController() : super(Loading());
-  IQuestionRespository questionRepository = GetIt.I<IQuestionRespository>();
-  IEvaluationRepository evaluationRepository = GetIt.I<IEvaluationRepository>();
+class EvaluationController implements IEvaluationController {
+  // EvaluationController() : super(Loading());
+  final IQuestionRespository questionRepository =
+      GetIt.I<IQuestionRespository>();
+  final IEvaluationRepository evaluationRepository =
+      GetIt.I<IEvaluationRepository>();
 
-  List<Evaluation> listEvaluations = [];
-  List<Question> listQuestions = [];
-  Question questionItem = Question(id: 0, question: '');
-  double answerSelected = 0;
-  int customerId = 0;
-  TextEditingController commentController = TextEditingController();
-  CarouselController sliderController = CarouselController();
-  int index = 0;
-  int indexCurrent = 0;
-  bool returnQuestion = false;
-  bool showButtonSend = true;
-  bool showOption = false;
-
-  Future getQuestions() async {
-    emit(Loading());
-
+  @override
+  Future<List<Question>> getQuestions({required int customerId}) async {
     try {
-      var questions = await questionRepository.getQuestions(customerId: customerId);
-      emit(Success(questions: questions));
+      var questions =
+          await questionRepository.getQuestions(customerId: customerId);
+      return questions;
     } on QuestionFailure catch (e) {
-      emit(Error(message: e.message));
+      throw QuestionFailure(message: e.message);
     }
   }
 
-  Future postEvaluations() async {
-    emit(Loading());
+  @override
+  Future<bool> postEvaluations(
+      {required List<Evaluation> listEvaluations}) async {
     try {
       await evaluationRepository.postEvaluations(evaluations: listEvaluations);
+      return true;
     } on QuestionFailure catch (e) {
-      emit(Error(message: e.message));
+      throw QuestionFailure(message: e.message);
     }
-  }
-
-  void showOptions() {
-    if (answerSelected <= 3 && questionItem.options != null && questionItem.options!.isNotEmpty) {
-      emit(ShowOptionsWidget());
-    } else {
-      emit(HideOptionsWidget());
-    }
-  }
-
-  void dispose() {
-    listEvaluations = [];
-    listQuestions = [];
-    questionItem = Question(id: 0, question: '');
-    answerSelected = 0;
-    customerId = 0;
-    commentController = TextEditingController();
-    sliderController = CarouselController();
-    index = 0;
-    indexCurrent = 0;
-    returnQuestion = false;
-    showButtonSend = true;
   }
 }

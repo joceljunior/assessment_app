@@ -6,22 +6,24 @@ import '../app/views/splash/splash_page.dart';
 class RouterAssessment {
   Route<dynamic> generateRoute(RouteSettings settings) {
     var args = settings.arguments;
-
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(
-          builder: (_) => SplashPage(),
+          builder: (_) => SplashPage(url: "lavateen"),
         );
 
-      case '/evaluation/:customerId':
+      case '/evaluation':
         var customerId = args as String;
         return MaterialPageRoute(
           builder: (_) => EvaluationPage(customerId: customerId),
         );
 
       default:
+        String completedUrl = settings.name!;
+        var url = completedUrl.substring(
+            completedUrl.indexOf('#') + 2, completedUrl.length);
         return MaterialPageRoute(
-          builder: (_) => SplashPage(),
+          builder: (_) => SplashPage(url: "lavateen"),
         );
     }
   }

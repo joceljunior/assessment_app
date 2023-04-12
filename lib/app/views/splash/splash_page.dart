@@ -1,96 +1,43 @@
-import 'dart:html';
-import 'package:assessment_app/app/views/splash/bloc/splash_bloc.dart';
+import 'package:assessment_app/app/views/splash/bloc/splash_store.dart';
 import 'package:assessment_app/app/views/splash/bloc/splash_states.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:get_it/get_it.dart';
 
 class SplashPage extends StatefulWidget {
-  const SplashPage({Key? key}) : super(key: key);
+  final String url;
+  const SplashPage({Key? key, required this.url}) : super(key: key);
 
   @override
   State<SplashPage> createState() => _SplashPageState();
 }
 
-bool showLogo = false;
-bool showButton = false;
-bool showNameCustomer = false;
-final SplashBloc bloc = SplashBloc();
+final SplashStore store = GetIt.I<SplashStore>();
 
 class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
-    var completedUrl = window.location.href;
-
-    var url = completedUrl.substring(
-        completedUrl.indexOf('#') + 2, completedUrl.length);
-    bloc.getCustomer(url: url);
-    showAnimations();
+    store.getCustomer(url: widget.url);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    // bloc.state.addListener(() {
-    //   print(bloc.state.toString());
-    // });
     var size = MediaQuery.of(context).size;
     return Scaffold(
-      body: Container(
-        color: Colors.white,
-        width: size.width,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            buildFadeLogo(context),
-            buildFadeNameCustomer(context),
-            buildFadeButton(context),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> showAnimations() async {
-    await Future.delayed(Duration(seconds: 1), () {
-      if (mounted) {
-        setState(() {
-          showLogo = true;
-        });
-      }
-    });
-
-    await Future.delayed(Duration(seconds: 2), () {
-      if (mounted) {
-        setState(() {
-          showButton = true;
-        });
-      }
-    });
-
-    await Future.delayed(Duration(seconds: 2), () {
-      if (mounted) {
-        setState(() {
-          showNameCustomer = true;
-        });
-      }
-    });
-    // await Future.delayed(Duration(seconds: 1), navigation);
-  }
-
-  Widget buildFadeLogo(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-
-    var logoWidth = size.width * (0.8);
-    return Expanded(
-      child: TweenAnimationBuilder(
-        tween: Tween<double>(begin: 0, end: 1),
-        duration: Duration(seconds: 1),
-        builder: (context, dynamic opacity, child) {
-          return AnimatedOpacity(
-            duration: Duration(seconds: 1),
-            opacity: showLogo ? opacity : 0,
-            child: Image.asset(
-              'assets/logo_pitaco.png',
-              width: logoWidth,
+      body: ValueListenableBuilder<SplashState>(
+        valueListenable: store,
+        builder: (context, state, child) {
+          return Container(
+            color: Colors.white,
+            width: size.width,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                //   buildFadeLogo(context),
+                buildFadeNameCustomer(context, state),
+                //  buildFadeButton(context),
+              ],
             ),
           );
         },
@@ -98,87 +45,68 @@ class _SplashPageState extends State<SplashPage> {
     );
   }
 
-  Widget buildFadeButton(BuildContext context) {
-    var _size = MediaQuery.of(context).size;
-    return TweenAnimationBuilder(
-      tween: Tween<double>(begin: 0, end: 1),
-      duration: Duration(seconds: 2),
-      builder: (context, dynamic opacity, child) {
-        return AnimatedOpacity(
-          duration: Duration(seconds: 2),
-          opacity: showLogo ? opacity : 0,
-          child: GestureDetector(
-            child: Container(
-              color: Color.fromARGB(255, 27, 115, 231),
-              width: _size.width,
-              height: _size.height * 0.10,
-              child: Center(
-                child: Text(
-                  'Iniciar',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                      color: Colors.white),
-                ),
-              ),
-            ),
-            onTap: () {
-              Navigator.of(context).pushNamed('/evaluation/${bloc.customerId}');
-            },
-          ),
-        );
-      },
+  Widget buildFadeLogo(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+
+    var logoWidth = size.width * (0.8);
+    return Expanded(
+      child: Animate(
+        child: Image.asset(
+          'assets/logo_pitaco.png',
+          width: logoWidth,
+        ).animate().fade(duration: Duration(seconds: 1)).shimmer(),
+      ),
     );
   }
 
-  Widget buildFadeNameCustomer(BuildContext context) {
-    // var _size = MediaQuery.of(context).size;
-    // var logoWidth = _size.width * (0.8);
+  Widget buildFadeNameCustomer(BuildContext context, SplashState state) {
+    print(state.runtimeType.toString());
+    if (state is Loading) {
+      return Expanded(child: Center(child: CircularProgressIndicator()));
+    }
+    if (state is Error) {
+      return Expanded(child: Center(child: Text(state.message)));
+    }
 
-    return ValueListenableBuilder(
-      valueListenable: bloc.state,
-      builder: (context, state, child) {
-        if (state is Loading) {
-          return Center(child: CircularProgressIndicator());
-        }
+    if (state is Success) {
+      return Expanded(
+        child: Center(
+          child: Animate(
+            child: Text(
+              state.customer.name,
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ).animate().fadeIn(duration: Duration(seconds: 1)),
+          ),
+        ),
+      );
+    }
 
-        if (state is Error) {
-          return Center(
-            child: Text(state.message),
-          );
-        }
+    return Container();
+  }
 
-        if (state is Success) {
-          bloc.customerId = state.customer.id;
-          return Expanded(
-            child: TweenAnimationBuilder(
-              tween: Tween<double>(begin: 0, end: 1),
-              duration: Duration(seconds: 1),
-              builder: (context, dynamic opacity, child) {
-                return AnimatedOpacity(
-                  duration: Duration(seconds: 1),
-                  opacity: showNameCustomer ? opacity : 0,
-                  child: Column(
-                    children: [
-                      Text(
-                        'Avalie os serviços de',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      Text(
-                        state.customer.name,
-                        style: TextStyle(
-                            fontSize: 22, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                );
-              },
+  Widget buildFadeButton(BuildContext context) {
+    var _size = MediaQuery.of(context).size;
+    return Animate(
+      child: GestureDetector(
+        child: Container(
+          color: Color.fromARGB(255, 27, 115, 231),
+          width: _size.width,
+          height: _size.height * 0.10,
+          child: Center(
+            child: Text(
+              'Iniciar',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                  color: Colors.white),
             ),
-          );
-        }
-
-        return Container();
-      },
+          ),
+        ),
+        onTap: () {
+          Navigator.of(context)
+              .pushNamed('/evaluation', arguments: store.customerId);
+        },
+      ).animate().fadeIn(duration: Duration(seconds: 1)),
     );
   }
 }

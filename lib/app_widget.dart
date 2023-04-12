@@ -8,7 +8,7 @@ class AppWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      onGenerateRoute: RouterAssessment().generateRoute,
+      onGenerateRoute: (settings) => RouterAssessment().generateRoute(settings),
       initialRoute: '/',
       title: 'Assessment',
       theme: ThemeData(

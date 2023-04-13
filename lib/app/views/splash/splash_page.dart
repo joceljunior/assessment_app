@@ -1,5 +1,5 @@
-import 'package:assessment_app/app/views/splash/bloc/splash_store.dart';
-import 'package:assessment_app/app/views/splash/bloc/splash_states.dart';
+import 'package:assessment_app/app/views/splash/store/splash_store.dart';
+import 'package:assessment_app/app/views/splash/store/splash_states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get_it/get_it.dart';
@@ -34,7 +34,7 @@ class _SplashPageState extends State<SplashPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                buildFadeLogo(context),
+                buildFadeLogo(context, state),
                 buildFadeNameCustomer(context, state),
                 buildFadeButton(context),
               ],
@@ -45,18 +45,23 @@ class _SplashPageState extends State<SplashPage> {
     );
   }
 
-  Widget buildFadeLogo(BuildContext context) {
+  Widget buildFadeLogo(BuildContext context, SplashState state) {
     var size = MediaQuery.of(context).size;
-
     var logoWidth = size.width * (0.8);
-    return Expanded(
-      child: Animate(
-        child: Image.asset(
-          'assets/logo_pitaco.png',
-          width: logoWidth,
-        ).animate().fade(duration: Duration(seconds: 1)).shimmer(),
-      ),
-    );
+    if (state is Success) {
+      return Expanded(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Animate(
+            child: Image.asset(
+              store.pathLogo,
+              width: logoWidth,
+            ).animate().fade(duration: Duration(seconds: 2)).shimmer(),
+          ),
+        ),
+      );
+    }
+    return Container();
   }
 
   Widget buildFadeNameCustomer(BuildContext context, SplashState state) {
@@ -72,10 +77,21 @@ class _SplashPageState extends State<SplashPage> {
       return Expanded(
         child: Center(
           child: Animate(
-            child: Text(
-              state.customer.name,
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ).animate().fadeIn(duration: Duration(seconds: 1)),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Você está avaliando os serviços de",
+                  style: TextStyle(
+                    fontSize: 15,
+                  ),
+                ).animate().fadeIn(duration: Duration(seconds: 1)),
+                Text(
+                  state.customer.name,
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ).animate().fadeIn(duration: Duration(seconds: 1)),
+              ],
+            ),
           ),
         ),
       );

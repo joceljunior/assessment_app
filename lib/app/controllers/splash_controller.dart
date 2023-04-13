@@ -16,8 +16,7 @@ class SplashController implements ISplashController {
       var customer = await repository.getCustomer(url: url);
       await db.setInt('session', customer.idSession);
       if (customer.id == 4) {
-        //  customer.pathLogo = "assets/"
-
+        customer.pathLogo = "assets/skina_pao.jpg";
       }
       return customer;
     } on CustomerFailure catch (e) {

@@ -43,10 +43,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/splash.png
-    - assets/logo.png
-    - assets/logo_pitaco.png
-    - assets/logolavagem.png
+    - assets/
 
   fonts:
     - family: ProductSans

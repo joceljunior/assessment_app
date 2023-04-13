@@ -20,6 +20,7 @@ class RouterAssessment {
 
       default:
         String completedUrl = settings.name!;
+        // ignore: unused_local_variable
         var url = completedUrl.substring(
             completedUrl.indexOf('#') + 2, completedUrl.length);
         return MaterialPageRoute(

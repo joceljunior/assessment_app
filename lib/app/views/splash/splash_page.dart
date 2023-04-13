@@ -34,9 +34,9 @@ class _SplashPageState extends State<SplashPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                //   buildFadeLogo(context),
+                buildFadeLogo(context),
                 buildFadeNameCustomer(context, state),
-                //  buildFadeButton(context),
+                buildFadeButton(context),
               ],
             ),
           );
@@ -104,7 +104,7 @@ class _SplashPageState extends State<SplashPage> {
         ),
         onTap: () {
           Navigator.of(context)
-              .pushNamed('/evaluation', arguments: store.customerId);
+              .pushNamed('/evaluation', arguments: store.customerId.toString());
         },
       ).animate().fadeIn(duration: Duration(seconds: 1)),
     );

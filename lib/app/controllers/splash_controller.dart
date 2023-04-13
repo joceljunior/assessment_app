@@ -15,6 +15,10 @@ class SplashController implements ISplashController {
       final db = await SharedPreferences.getInstance();
       var customer = await repository.getCustomer(url: url);
       await db.setInt('session', customer.idSession);
+      if (customer.id == 4) {
+        //  customer.pathLogo = "assets/"
+
+      }
       return customer;
     } on CustomerFailure catch (e) {
       throw CustomerFailure(message: e.message);

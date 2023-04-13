@@ -5,11 +5,13 @@ class Customer {
   final String name;
   final String url;
   final int idSession;
+  String pathLogo;
   Customer({
     required this.id,
     required this.name,
     required this.url,
     required this.idSession,
+    this.pathLogo = "assets/logo_pitaco.png",
   });
 
   Map<String, dynamic> toMap() {

@@ -1,37 +1,36 @@
-import 'package:assessment_app/app/views/evaluation/bloc/evaluation_states.dart';
+import 'package:assessment_app/app/views/evaluation/store/evaluation_states.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:get_it/get_it.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 import '../../models/evaluation.dart';
-import 'bloc/evaluation_bloc.dart';
+import 'store/evaluation_store.dart';
 import 'widgets/options_widget.dart';
+import 'widgets/row_button_evaluation_widget.dart';
 
 class EvaluationPage extends StatefulWidget {
-  final String? customerId;
+  final int customerId;
   const EvaluationPage({super.key, required this.customerId});
 
   @override
   State<EvaluationPage> createState() => _EvaluationPageState();
 }
 
-final EvaluationBloc bloc = EvaluationBloc();
+final EvaluationStore store = GetIt.I<EvaluationStore>();
 
 class _EvaluationPageState extends State<EvaluationPage> {
   @override
   void initState() {
-    bloc.indexCurrent = 0;
-    bloc.customerId =
-        int.parse(widget.customerId == null ? '0' : widget.customerId!);
-    bloc.getQuestions();
+    store.getQuestions(customerId: widget.customerId);
 
     super.initState();
   }
 
   @override
   void dispose() {
-    bloc.dispose();
+    store.dispose();
 
     super.dispose();
   }
@@ -41,49 +40,41 @@ class _EvaluationPageState extends State<EvaluationPage> {
     var size = MediaQuery.of(context).size;
 
     return Scaffold(
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-        },
-        child: SingleChildScrollView(
-          child: Container(
-            height: size.height,
-            width: size.width,
-            color: Colors.white,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  height: size.height * 0.5,
-                  color: Color.fromARGB(255, 255, 255, 255),
-                  child: ValueListenableBuilder(
-                      valueListenable: bloc.state,
-                      // listener: (context, state) {
-                      //   if (state is Success) {
-                      //     evaluationController.listQuestions = state.questions;
-                      //   }
+      body: ValueListenableBuilder<EvaluationState>(
+        valueListenable: store,
+        builder: (context, state, child) {
+          if (state is Loading) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
-                      //   if (state is ShowOptionsWidget) {
-                      //     evaluationController.showOption = true;
-                      //   }
+          if (state is Error) {
+            return Center(
+              child: Text(state.message),
+            );
+          }
 
-                      //   if (state is HideOptionsWidget) {
-                      //     evaluationController.showOption = false;
-                      //   }
-                      // },
-                      builder: (context, state, child) {
-                        if (state is Loading) {
-                          return Center(child: CircularProgressIndicator());
-                        }
-
-                        if (state is Error) {
-                          return Center(
-                            child: Text(state.message),
-                          );
-                        }
-
-                        return CarouselSlider.builder(
-                            carouselController: bloc.sliderController,
+          if (state is QuestionsSuccess) {
+            return GestureDetector(
+              onTap: () {
+                FocusScope.of(context).requestFocus(FocusNode());
+              },
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: size.height * 0.05),
+                  child: Container(
+                    height: size.height,
+                    width: size.width,
+                    color: Colors.white,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          height: size.height * 0.5,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                          child: CarouselSlider.builder(
+                            carouselController: store.sliderController,
                             options: CarouselOptions(
                               aspectRatio: 16 / 15,
                               viewportFraction: 0.9,
@@ -95,7 +86,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
                               enlargeCenterPage: true,
                               scrollPhysics: NeverScrollableScrollPhysics(),
                               onPageChanged: (index, reason) {
-                                bloc.index = index;
+                                //  store.index = index;
                                 // if (controller.itemIndex <
                                 //     controller.listEvaluations.length) {
                                 //   getDefaultValues(index: controller.index);
@@ -103,20 +94,19 @@ class _EvaluationPageState extends State<EvaluationPage> {
                               },
                               scrollDirection: Axis.horizontal,
                             ),
-                            itemCount: bloc.listQuestions.length,
+                            itemCount: state.questions.length,
                             itemBuilder: (BuildContext context, int itemIndex,
                                 int pageViewIndex) {
-                              bloc.questionItem = bloc.listQuestions[itemIndex];
-                              bloc.indexCurrent = itemIndex;
-
+                              store.currentQuestion = state.questions[itemIndex];
                               return Column(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
                                 children: [
-                                  Text(bloc.questionItem.question,
+                                  // QUESTIONS
+                                  Text(store.currentQuestion.question,
                                       style: TextStyle(fontSize: 20)),
 
-                                  // Starts Rating
+                                  // RATING
                                   RatingBar.builder(
                                     // initialRating: evaluationController.answerSelected,
                                     minRating: 0,
@@ -131,14 +121,14 @@ class _EvaluationPageState extends State<EvaluationPage> {
                                       color: Colors.amber,
                                     ),
                                     onRatingUpdate: (double rating) {
-                                      bloc.answerSelected = rating;
-                                      //! bloc.showOptions();
+                                      store.answerSelected = rating;
+                                      //! store.showOptions();
                                     },
                                   ),
 
-                                  // Problems options
+                                  //OPTIONS
                                   Visibility(
-                                    visible: bloc.showOption,
+                                    visible: store.showOption,
                                     child: Padding(
                                       padding: const EdgeInsets.all(20.0),
                                       child: Text(
@@ -147,19 +137,19 @@ class _EvaluationPageState extends State<EvaluationPage> {
                                       ),
                                     ),
                                   ),
-                                  // SizedBox(height: 5),
 
                                   Visibility(
-                                    visible: bloc.showOption,
+                                    visible: store.showOption,
                                     child: OptionsWidget(
-                                      options: bloc.questionItem.options!,
+                                      options: store.currentQuestion.options!,
                                     ),
                                   ),
-
+                                  // END OPTIONS
                                   const SizedBox(height: 20),
-//até aqui
+
+                                  //COMMENT
                                   TextFormField(
-                                    controller: bloc.commentController,
+                                    controller: store.commentController,
                                     maxLines: 4,
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.all(10.0),
@@ -175,12 +165,13 @@ class _EvaluationPageState extends State<EvaluationPage> {
                                     ),
                                   ),
 
+                                  //STEPS
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 8.0),
                                     child: StepProgressIndicator(
-                                      totalSteps: bloc.listQuestions.length,
-                                      currentStep: bloc.indexCurrent,
+                                      totalSteps: state.questions.length,
+                                      currentStep: itemIndex,
                                       size: 8,
                                       padding: 0,
                                       selectedColor: Colors.yellow,
@@ -206,120 +197,75 @@ class _EvaluationPageState extends State<EvaluationPage> {
                                   )
                                 ],
                               );
-                            });
-                      }),
-                ),
-                Row(
-                  mainAxisAlignment: /*controller.index*/ 0 == 0
-                      ? MainAxisAlignment.center
-                      : MainAxisAlignment.spaceAround,
-                  children: [
-                    Visibility(
-                      visible: /*controller.index != 0*/ false,
-                      child: Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: size.height * 0.08),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(
-                                vertical: size.height * 0.04,
-                                horizontal: size.height * 0.07,
-                              ),
-                              elevation: 5,
-                              backgroundColor: Colors.white24,
-                              side: BorderSide(
-                                  width: 1,
-                                  color: Color.fromARGB(78, 0, 0, 0))),
-                          child: Text(
-                            'VOLTAR',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
+                            },
                           ),
-                          onPressed: () {
-                            bloc.returnQuestion = true;
-                            bloc.answerSelected = 0;
-                            bloc.sliderController.previousPage();
-                          },
                         ),
-                      ),
-                    ),
-                    Visibility(
-                      visible: bloc.showButtonSend,
-                      child: Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: size.height * 0.08),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(
-                                vertical: size.height * 0.03,
-                                horizontal: size.height * 0.07,
-                              ),
-                              elevation: 5,
-                              backgroundColor:
-                                  Color.fromARGB(255, 27, 115, 231),
-                              side: BorderSide(
-                                  width: 1,
-                                  color: Color.fromARGB(78, 0, 0, 0))),
-                          child: Text(
-                            'AVALIAR',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          onPressed: () async {
-                            if (bloc.answerSelected != 0) {
-                              var value = Evaluation(
-                                bloc.questionItem.id,
-                                bloc.customerId,
-                                bloc.answerSelected,
-                                bloc.commentController.text,
-                              );
 
-                              if (bloc.returnQuestion) {
-                                // var itemSelected = controller.listEvaluations
-                                //     .firstWhere((element) =>
-                                //         element.idQuestion == value.idQuestion);
-                                // controller.listEvaluations.remove(itemSelected);
-                                bloc.listEvaluations
-                                    .setAll(bloc.index, [value]);
-                              } else {
-                                bloc.listEvaluations.add(value);
-                              }
-                              bloc.commentController.clear();
-                              bloc.returnQuestion = false;
-                              bloc.answerSelected = 0;
-                              if (bloc.listQuestions.length - 1 > bloc.index) {
-                                bloc.sliderController.nextPage();
-                              } else {
-                                setState(() {
-                                  bloc.showButtonSend = false;
-                                  bloc.indexCurrent++;
-                                });
-                                await bloc.postEvaluations();
-                                Navigator.of(context).pushNamed(
-                                    '/checkout/${bloc.listQuestions.length}/${widget.customerId}');
-                              }
-                            } else {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                content: Text('Selecione uma nota'),
-                                duration: Duration(seconds: 2),
-                                backgroundColor: Colors.red,
-                              ));
-                            }
+                        //Buton
+                        RowButtonEvaluationWidget(
+                          showButtonReturn: false,
+                          showButtonSend: store.showButtonSend,
+                          onPressedEvaluate: () {
+                                            var evaluation = Evaluation(
+                  store.currentQuestion.id,
+                  store.currentQuestion.,
+                  store.answerSelected,
+                  store.commentController.text,
+                );
+
+                // if (store.answerSelected != 0) {
+                //   var value = Evaluation(
+                //     store.questionItem.id,
+                //     store.customerId,
+                //     store.answerSelected,
+                //     store.commentController.text,
+                //   );
+
+                //   if (store.returnQuestion) {
+                //     // var itemSelected = controller.listEvaluations
+                //     //     .firstWhere((element) =>
+                //     //         element.idQuestion == value.idQuestion);
+                //     // controller.listEvaluations.remove(itemSelected);
+                //     store.listEvaluations
+                //         .setAll(store.index, [value]);
+                //   } else {
+                //     store.listEvaluations.add(value);
+                //   }
+                //   store.commentController.clear();
+                //   store.returnQuestion = false;
+                //   store.answerSelected = 0;
+                //   if (store.listQuestions.length - 1 >
+                //       store.index) {
+                //     store.sliderController.nextPage();
+                //   } else {
+                //     setState(() {
+                //       store.showButtonSend = false;
+                //       store.indexCurrent++;
+                //     });
+                //     await store.postEvaluations();
+                //     Navigator.of(context).pushNamed(
+                //         '/checkout/${store.listQuestions.length}/${widget.customerId}');
+                //   }
+                // } else {
+                //   ScaffoldMessenger.of(context)
+                //       .showSnackBar(SnackBar(
+                //     content: Text('Selecione uma nota'),
+                //     duration: Duration(seconds: 2),
+                //     backgroundColor: Colors.red,
+                //   ));
+                // }
                           },
                         ),
-                      ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ],
-            ),
-          ),
-        ),
+              ),
+            );
+          }
+
+          return Container();
+        },
       ),
     );
   }

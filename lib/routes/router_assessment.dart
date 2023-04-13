@@ -13,7 +13,7 @@ class RouterAssessment {
         );
 
       case '/evaluation':
-        var customerId = args as String;
+        var customerId = args as int;
         return MaterialPageRoute(
           builder: (_) => EvaluationPage(customerId: customerId),
         );

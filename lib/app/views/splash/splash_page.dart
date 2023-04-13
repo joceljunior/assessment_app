@@ -120,7 +120,7 @@ class _SplashPageState extends State<SplashPage> {
         ),
         onTap: () {
           Navigator.of(context)
-              .pushNamed('/evaluation', arguments: store.customerId.toString());
+              .pushNamed('/evaluation', arguments: store.customerId);
         },
       ).animate().fadeIn(duration: Duration(seconds: 1)),
     );

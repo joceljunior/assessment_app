@@ -9,7 +9,6 @@ import 'package:get_it/get_it.dart';
 import '../../core/exception/assessment_failures.dart';
 
 class EvaluationController implements IEvaluationController {
-  // EvaluationController() : super(Loading());
   final IQuestionRespository questionRepository =
       GetIt.I<IQuestionRespository>();
   final IEvaluationRepository evaluationRepository =

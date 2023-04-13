@@ -65,7 +65,6 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Widget buildFadeNameCustomer(BuildContext context, SplashState state) {
-    print(state.runtimeType.toString());
     if (state is Loading) {
       return Expanded(child: Center(child: CircularProgressIndicator()));
     }

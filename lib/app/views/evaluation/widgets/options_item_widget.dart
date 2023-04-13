@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import '../../../models/option.dart';
 
-class OptionsWidget extends StatefulWidget {
+class OptionsItemWidget extends StatefulWidget {
   final List<Option> options;
-  const OptionsWidget({super.key, required this.options});
+  const OptionsItemWidget({super.key, required this.options});
 
   @override
-  State<OptionsWidget> createState() => _OptionsWidgetState();
+  State<OptionsItemWidget> createState() => _OptionsItemWidgetState();
 }
 
-class _OptionsWidgetState extends State<OptionsWidget> {
+class _OptionsItemWidgetState extends State<OptionsItemWidget> {
   // https://karthikponnam.medium.com/flutter-multi-select-choicechip-244ea016b6fa
   List<bool> problemSeleted = [];
 
@@ -43,31 +43,6 @@ class _OptionsWidgetState extends State<OptionsWidget> {
             backgroundColor: Colors.grey.shade50,
             selectedColor: Colors.orange,
           );
-        }).toList()
-
-        // ListView.builder(
-        //   shrinkWrap: true,
-        //   physics: NeverScrollableScrollPhysics(),
-        //   // scrollDirection: Axis.horizontal,
-        //   itemCount: widget.options.length,
-        //   itemBuilder: ((context, index) {
-        //     var item = widget.options[index];
-        //     return Container(
-        //       padding: EdgeInsets.all(2.0),
-        //       child: ChoiceChip(
-        //         label: Text(
-        //           item.name,
-        //           style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.normal,
-        //           ),
-        //         ),
-        //         selected: false,
-        //         onSelected: (selected) {},
-        //       ),
-        //     );
-        //   }),
-        // ),
-        // ],
-
-        );
+        }).toList());
   }
 }

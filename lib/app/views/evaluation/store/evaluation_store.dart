@@ -13,6 +13,7 @@ class EvaluationStore extends ValueNotifier<EvaluationState> {
   final IEvaluationController controller = GetIt.I<IEvaluationController>();
 
   List<Evaluation> evaluations = [];
+  List<Question> questions = [];
   TextEditingController commentController = TextEditingController();
   CarouselController sliderController = CarouselController();
   bool showButtonSend = true;
@@ -23,7 +24,8 @@ class EvaluationStore extends ValueNotifier<EvaluationState> {
   Future<void> getQuestions({required int customerId}) async {
     value = Loading();
     try {
-      var questions = await controller.getQuestions(customerId: customerId);
+      var questionsList = await controller.getQuestions(customerId: customerId);
+      questions = questionsList;
       value = QuestionsSuccess(questions: questions);
     } on QuestionFailure catch (e) {
       value = Error(message: e.message);
@@ -40,15 +42,15 @@ class EvaluationStore extends ValueNotifier<EvaluationState> {
     }
   }
 
-  // void showOptions() {
-  //   if (answerSelected <= 3 &&
-  //       questionItem.options != null &&
-  //       questionItem.options!.isNotEmpty) {
-  //     emit(ShowOptionsWidget());
-  //   } else {
-  //     emit(HideOptionsWidget());
-  //   }
-  // }
+  void showOptions() {
+    if (answerSelected <= 3 &&
+        currentQuestion.options != null &&
+        currentQuestion.options!.isNotEmpty) {
+      value = ShowOptions(show: true);
+    } else {
+      value = ShowOptions(show: false);
+    }
+  }
 
   void dispose() {
     // listEvaluations = [];

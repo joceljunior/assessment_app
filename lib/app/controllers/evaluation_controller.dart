@@ -5,6 +5,7 @@ import 'package:assessment_app/app/models/question.dart';
 import 'package:assessment_app/app/repositories/interfaces/i_evaluation_repository.dart';
 import 'package:assessment_app/app/repositories/interfaces/i_question_repository.dart';
 import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/exception/assessment_failures.dart';
 
@@ -29,6 +30,12 @@ class EvaluationController implements IEvaluationController {
   Future<bool> postEvaluations(
       {required List<Evaluation> listEvaluations}) async {
     try {
+      final db = await SharedPreferences.getInstance();
+      var sessionId = db.getInt("session");
+
+      for (var element in listEvaluations) {
+        element.idSession = sessionId!;
+      }
       await evaluationRepository.postEvaluations(evaluations: listEvaluations);
       return true;
     } on QuestionFailure catch (e) {

@@ -14,12 +14,15 @@ class EvaluationStore extends ValueNotifier<EvaluationState> {
 
   List<Evaluation> evaluations = [];
   List<Question> questions = [];
+  List<int> optionsSelected = [];
   TextEditingController commentController = TextEditingController();
   CarouselController sliderController = CarouselController();
   bool showButtonSend = true;
   bool showOption = false;
   double answerSelected = 0;
   Question currentQuestion = Question(id: 0, question: "");
+  Eva currentEvaluation = Question(id: 0, question: "");
+  int index = 0;
 
   Future<void> getQuestions({required int customerId}) async {
     value = Loading();

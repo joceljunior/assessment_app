@@ -73,7 +73,6 @@ class _EvaluationPageState extends State<EvaluationPage> {
                   Container(
                     height: size.height * 0.80,
                     color: Color.fromARGB(255, 255, 255, 255),
-                    // color: Colors.red,
                     child: CarouselSlider.builder(
                       carouselController: store.sliderController,
                       options: CarouselOptions(
@@ -90,6 +89,8 @@ class _EvaluationPageState extends State<EvaluationPage> {
                           setState(() {
                             store.answerSelected = 0;
                             store.showOption = false;
+                            store.commentController.clear();
+                            store.optionsSelected.clear();
                           });
                         },
                         scrollDirection: Axis.horizontal,
@@ -97,7 +98,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
                       itemCount: store.questions.length,
                       itemBuilder: (BuildContext context, int itemIndex,
                           int pageViewIndex) {
-                        store.currentQuestion = store.questions[itemIndex];
+                        store.currentQuestion = store.questions[store.index];
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
@@ -122,7 +123,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
                             ),
                             // STEPS
                             StepsEvaluationWidget(
-                              currentStep: itemIndex,
+                              currentStep: store.index,
                               totelSteps: store.questions.length,
                             ),
                             // OPTIONS
@@ -142,14 +143,21 @@ class _EvaluationPageState extends State<EvaluationPage> {
                     showButtonSend: store.showButtonSend,
                     onPressedEvaluate: () {
                       var evaluation = Evaluation(
-                        store.currentQuestion.id,
-                        widget.customerId,
-                        store.answerSelected,
-                        store.commentController.text,
+                        idQuestion: store.currentQuestion.id,
+                        idCustomer: widget.customerId,
+                        answer: store.answerSelected,
+                        comment: store.commentController.text,
+                        options: store.optionsSelected,
                       );
 
                       store.evaluations.add(evaluation);
                       store.sliderController.nextPage();
+
+                      if (store.index >= store.questions.length - 1) {
+                        store.postEvaluations();
+                      }
+
+                      updateIndex();
                     },
                   ),
                 ],
@@ -159,5 +167,11 @@ class _EvaluationPageState extends State<EvaluationPage> {
         },
       ),
     );
+  }
+
+  void updateIndex() {
+    setState(() {
+      store.index++;
+    });
   }
 }

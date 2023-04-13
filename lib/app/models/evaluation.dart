@@ -1,17 +1,33 @@
+import 'dart:convert';
+
 class Evaluation {
   final int idQuestion;
   final int idCustomer;
   final double answer;
   final String comment;
+  int idSession;
+  final List<int> options;
+  Evaluation({
+    required this.idQuestion,
+    required this.idCustomer,
+    required this.answer,
+    required this.comment,
+    this.idSession = 0,
+    required this.options,
+  });
 
-  Evaluation(this.idQuestion, this.idCustomer, this.answer, this.comment);
+  Map<String, dynamic> toMap() {
+    final result = <String, dynamic>{};
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id_question': idQuestion,
-      'id_customer': idCustomer,
-      'answer': answer,
-      'comment': comment,
-    };
+    result.addAll({'id_question': idQuestion});
+    result.addAll({'id_customer': idCustomer});
+    result.addAll({'answer': answer});
+    result.addAll({'comment': comment});
+    result.addAll({'id_session': idSession});
+    result.addAll({'options': options});
+
+    return result;
   }
+
+  String toJson() => json.encode(toMap());
 }

@@ -19,7 +19,7 @@ class AssessmentBinds {
     GetIt getIt = GetIt.instance;
     getIt.registerFactory<Dio>(() => Dio());
     getIt.registerFactory<SplashStore>(() => SplashStore());
-    getIt.registerLazySingleton<EvaluationStore>(() => EvaluationStore());
+    getIt.registerFactory<EvaluationStore>(() => EvaluationStore());
     getIt.registerLazySingleton<ISplashController>(() => SplashController());
     getIt.registerLazySingleton<IEvaluationController>(
         () => EvaluationController());

@@ -1,11 +1,15 @@
-import 'package:assessment_app/app/views/evaluation/store/evaluation_store.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+
 import '../../../models/option.dart';
 
 class OptionsItemWidget extends StatefulWidget {
   final List<Option> options;
-  const OptionsItemWidget({super.key, required this.options});
+  final Function(int value) optionSelected;
+  const OptionsItemWidget({
+    Key? key,
+    required this.options,
+    required this.optionSelected,
+  }) : super(key: key);
 
   @override
   State<OptionsItemWidget> createState() => _OptionsItemWidgetState();
@@ -14,7 +18,6 @@ class OptionsItemWidget extends StatefulWidget {
 class _OptionsItemWidgetState extends State<OptionsItemWidget> {
   // https://karthikponnam.medium.com/flutter-multi-select-choicechip-244ea016b6fa
   List<bool> problemSeleted = [];
-  final EvaluationStore store = GetIt.I<EvaluationStore>();
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +44,7 @@ class _OptionsItemWidgetState extends State<OptionsItemWidget> {
             onSelected: (bool selected) {
               setState(() {
                 problemSeleted[index] = selected;
-                store.optionsSelected.add(item.id!);
+                widget.optionSelected(item.id!);
               });
             },
             backgroundColor: Colors.grey.shade50,

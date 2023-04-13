@@ -14,14 +14,13 @@ class EvaluationStore extends ValueNotifier<EvaluationState> {
 
   List<Evaluation> evaluations = [];
   List<Question> questions = [];
-  List<int> optionsSelected = [];
   TextEditingController commentController = TextEditingController();
   CarouselController sliderController = CarouselController();
   bool showButtonSend = true;
   bool showOption = false;
   double answerSelected = 0;
   Question currentQuestion = Question(id: 0, question: "");
-  Eva currentEvaluation = Question(id: 0, question: "");
+
   int index = 0;
 
   Future<void> getQuestions({required int customerId}) async {
@@ -53,19 +52,5 @@ class EvaluationStore extends ValueNotifier<EvaluationState> {
     } else {
       value = ShowOptions(show: false);
     }
-  }
-
-  void dispose() {
-    // listEvaluations = [];
-    // listQuestions = [];
-    // questionItem = Question(id: 0, question: '');
-    // answerSelected = 0;
-    // customerId = 0;
-    // commentController = TextEditingController();
-    // sliderController = CarouselController();
-    // index = 0;
-    // indexCurrent = 0;
-    // returnQuestion = false;
-    // showButtonSend = true;
   }
 }

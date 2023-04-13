@@ -90,7 +90,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
                             store.answerSelected = 0;
                             store.showOption = false;
                             store.commentController.clear();
-                            store.optionsSelected.clear();
+                            // store.optionsSlected.clear();
                           });
                         },
                         scrollDirection: Axis.horizontal,
@@ -130,6 +130,9 @@ class _EvaluationPageState extends State<EvaluationPage> {
                             OptionsEvaluationWidget(
                               show: store.showOption,
                               options: store.currentQuestion.options!,
+                              optionSelected: (value) {
+                                print(value);
+                              },
                             ),
                           ],
                         );
@@ -142,22 +145,14 @@ class _EvaluationPageState extends State<EvaluationPage> {
                     showButtonReturn: false,
                     showButtonSend: store.showButtonSend,
                     onPressedEvaluate: () {
-                      var evaluation = Evaluation(
-                        idQuestion: store.currentQuestion.id,
-                        idCustomer: widget.customerId,
-                        answer: store.answerSelected,
-                        comment: store.commentController.text,
-                        options: store.optionsSelected,
-                      );
-
-                      store.evaluations.add(evaluation);
-                      store.sliderController.nextPage();
-
-                      if (store.index >= store.questions.length - 1) {
-                        store.postEvaluations();
+                      if (checkAnswerSelected(context)) {
+                        store.sliderController.nextPage();
+                        updateIndex();
+                        createEvaluation();
+                        if (store.index >= store.questions.length) {
+                          store.postEvaluations();
+                        }
                       }
-
-                      updateIndex();
                     },
                   ),
                 ],
@@ -167,6 +162,31 @@ class _EvaluationPageState extends State<EvaluationPage> {
         },
       ),
     );
+  }
+
+  void createEvaluation() {
+    final Evaluation evaluation = Evaluation(
+      idQuestion: store.currentQuestion.id,
+      idCustomer: widget.customerId,
+      answer: store.answerSelected,
+      comment: store.commentController.text,
+      options: [],
+    );
+
+    store.evaluations.add(evaluation);
+  }
+
+  bool checkAnswerSelected(BuildContext context) {
+    if (store.answerSelected == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Selecione uma nota'),
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.red,
+      ));
+      return false;
+    }
+
+    return true;
   }
 
   void updateIndex() {

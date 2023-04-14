@@ -48,20 +48,18 @@ class _SplashPageState extends State<SplashPage> {
   Widget buildFadeLogo(BuildContext context, SplashState state) {
     var size = MediaQuery.of(context).size;
     var logoWidth = size.width * (0.8);
-    if (state is Success) {
-      return Expanded(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Animate(
-            child: Image.asset(
-              store.pathLogo,
-              width: logoWidth,
-            ).animate().fade(duration: Duration(seconds: 2)).shimmer(),
-          ),
+
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Animate(
+          child: Image.asset(
+            store.pathLogo,
+            width: logoWidth,
+          ).animate().fade(duration: Duration(seconds: 2)).shimmer(),
         ),
-      );
-    }
-    return Container();
+      ),
+    );
   }
 
   Widget buildFadeNameCustomer(BuildContext context, SplashState state) {
@@ -96,9 +94,6 @@ class _SplashPageState extends State<SplashPage> {
     var _size = MediaQuery.of(context).size;
     if (state is Loading) {
       return Expanded(child: Center(child: CircularProgressIndicator()));
-    }
-    if (state is Error) {
-      return Expanded(child: Center(child: Text(state.message)));
     }
     if (state is Success) {
       return Animate(

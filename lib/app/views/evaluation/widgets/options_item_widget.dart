@@ -4,7 +4,7 @@ import '../../../models/option.dart';
 
 class OptionsItemWidget extends StatefulWidget {
   final List<Option> options;
-  final Function(int value) optionSelected;
+  final Function(List<int> values) optionSelected;
   const OptionsItemWidget({
     Key? key,
     required this.options,
@@ -18,6 +18,7 @@ class OptionsItemWidget extends StatefulWidget {
 class _OptionsItemWidgetState extends State<OptionsItemWidget> {
   // https://karthikponnam.medium.com/flutter-multi-select-choicechip-244ea016b6fa
   List<bool> problemSeleted = [];
+  List<int> seletedIds = [];
 
   @override
   Widget build(BuildContext context) {
@@ -42,10 +43,14 @@ class _OptionsItemWidgetState extends State<OptionsItemWidget> {
             ),
             selected: problemSeleted[index], // _selectedAnimalIndex == index,
             onSelected: (bool selected) {
-              setState(() {
-                problemSeleted[index] = selected;
-                widget.optionSelected(item.id!);
-              });
+              problemSeleted[index] = selected;
+              if (selected) {
+                seletedIds.add(item.id!);
+              } else if (selected == false && seletedIds.contains(item.id)) {
+                seletedIds.remove(item.id);
+              }
+              widget.optionSelected(seletedIds);
+              setState(() {});
             },
             backgroundColor: Colors.grey.shade50,
             selectedColor: Colors.orange,

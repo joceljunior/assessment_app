@@ -7,7 +7,7 @@ import 'options_item_widget.dart';
 class OptionsEvaluationWidget extends StatefulWidget {
   final List<Option> options;
   final bool show;
-  final Function(int value) optionSelected;
+  final Function(List<int> values) optionSelected;
   const OptionsEvaluationWidget({
     Key? key,
     required this.options,
@@ -38,8 +38,8 @@ class _OptionsEvaluationWidgetState extends State<OptionsEvaluationWidget> {
               visible: widget.show,
               child: OptionsItemWidget(
                 options: widget.options,
-                optionSelected: ((value) {
-                  widget.optionSelected(value);
+                optionSelected: ((values) {
+                  widget.optionSelected(values);
                 }),
               ),
             ),

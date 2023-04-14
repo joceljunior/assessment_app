@@ -50,7 +50,6 @@ class _EvaluationPageState extends State<EvaluationPage> {
       body: ValueListenableBuilder<EvaluationState>(
         valueListenable: store,
         builder: (context, state, child) {
-          print(state);
           if (state is Loading) {
             return Center(
               child: CircularProgressIndicator(),
@@ -130,8 +129,8 @@ class _EvaluationPageState extends State<EvaluationPage> {
                             OptionsEvaluationWidget(
                               show: store.showOption,
                               options: store.currentQuestion.options!,
-                              optionSelected: (value) {
-                                print(value);
+                              optionSelected: (values) {
+                                store.optionsSelected = values;
                               },
                             ),
                           ],
@@ -146,12 +145,12 @@ class _EvaluationPageState extends State<EvaluationPage> {
                     showButtonSend: store.showButtonSend,
                     onPressedEvaluate: () {
                       if (checkAnswerSelected(context)) {
-                        store.sliderController.nextPage();
                         updateIndex();
                         createEvaluation();
                         if (store.index >= store.questions.length) {
                           store.postEvaluations();
                         }
+                        store.sliderController.nextPage();
                       }
                     },
                   ),
@@ -170,7 +169,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
       idCustomer: widget.customerId,
       answer: store.answerSelected,
       comment: store.commentController.text,
-      options: [],
+      options: store.optionsSelected,
     );
 
     store.evaluations.add(evaluation);

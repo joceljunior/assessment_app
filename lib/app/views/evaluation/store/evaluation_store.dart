@@ -19,6 +19,7 @@ class EvaluationStore extends ValueNotifier<EvaluationState> {
   bool showButtonSend = true;
   bool showOption = false;
   double answerSelected = 0;
+  List<int> optionsSelected = [];
   Question currentQuestion = Question(id: 0, question: "");
 
   int index = 0;

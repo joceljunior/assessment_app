@@ -43,7 +43,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
       body: ValueListenableBuilder<EvaluationState>(
         valueListenable: store,
         builder: (context, state, child) {
-          if (state is Loading) {
+          if (state is Loading || state is EvaluationSuccess) {
             return Center(
               child: CircularProgressIndicator(),
             );
@@ -62,8 +62,9 @@ class _EvaluationPageState extends State<EvaluationPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(
+                  Container(
                     height: size.height * 0.80,
+                    color: Color.fromARGB(255, 255, 255, 255),
                     child: CarouselSlider.builder(
                       carouselController: store.sliderController,
                       options: CarouselOptions(
@@ -137,6 +138,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
                     showButtonSend: store.showButtonSend,
                     onPressedEvaluate: () {
                       if (checkAnswerSelected(context)) {
+                        updateIndex();
                         createEvaluation();
                         nextAction();
                       }
@@ -155,7 +157,6 @@ class _EvaluationPageState extends State<EvaluationPage> {
     if (store.index >= store.questions.length) {
       store.postEvaluations();
     } else {
-      updateIndex();
       store.sliderController.nextPage();
     }
   }
@@ -199,7 +200,6 @@ class _EvaluationPageState extends State<EvaluationPage> {
           store.showOption = state.show;
         });
       }
-
       if (state is EvaluationSuccess) {
         Navigator.pushNamed(context, "/checkout");
       }

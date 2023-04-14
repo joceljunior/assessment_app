@@ -29,7 +29,7 @@ class _OptionsEvaluationWidgetState extends State<OptionsEvaluationWidget> {
           Visibility(
             visible: widget.show,
             child: Text(
-              "Selecione um ou mais problemas",
+              "Selecione no que podemos melhorar",
               style: TextStyle(fontSize: 20),
             ),
           ),

@@ -35,7 +35,9 @@ class _OptionsItemWidgetState extends State<OptionsItemWidget> {
               child: Text(
                 item.name,
                 style: TextStyle(
-                  color: Colors.black,
+                  color: seletedIds.any((element) => element == item.id!)
+                      ? Colors.white
+                      : Colors.black,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),

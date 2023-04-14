@@ -40,6 +40,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Colors.white,
       body: ValueListenableBuilder<EvaluationState>(
         valueListenable: store,
         builder: (context, state, child) {

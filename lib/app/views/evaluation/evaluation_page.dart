@@ -64,7 +64,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    height: size.height * 0.80,
+                    height: size.height * 0.70,
                     color: Color.fromARGB(255, 255, 255, 255),
                     child: CarouselSlider.builder(
                       carouselController: store.sliderController,

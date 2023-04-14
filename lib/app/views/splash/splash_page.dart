@@ -36,7 +36,7 @@ class _SplashPageState extends State<SplashPage> {
               children: [
                 buildFadeLogo(context, state),
                 buildFadeNameCustomer(context, state),
-                buildFadeButton(context),
+                buildFadeButton(context, state),
               ],
             ),
           );
@@ -65,13 +65,6 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Widget buildFadeNameCustomer(BuildContext context, SplashState state) {
-    if (state is Loading) {
-      return Expanded(child: Center(child: CircularProgressIndicator()));
-    }
-    if (state is Error) {
-      return Expanded(child: Center(child: Text(state.message)));
-    }
-
     if (state is Success) {
       return Expanded(
         child: Center(
@@ -99,29 +92,39 @@ class _SplashPageState extends State<SplashPage> {
     return Container();
   }
 
-  Widget buildFadeButton(BuildContext context) {
+  Widget buildFadeButton(BuildContext context, SplashState state) {
     var _size = MediaQuery.of(context).size;
-    return Animate(
-      child: GestureDetector(
-        child: Container(
-          color: Theme.of(context).primaryColor,
-          width: _size.width,
-          height: _size.height * 0.10,
-          child: Center(
-            child: Text(
-              'Iniciar',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                  color: Colors.white),
+    if (state is Loading) {
+      return Expanded(child: Center(child: CircularProgressIndicator()));
+    }
+    if (state is Error) {
+      return Expanded(child: Center(child: Text(state.message)));
+    }
+    if (state is Success) {
+      return Animate(
+        child: GestureDetector(
+          child: Container(
+            color: Theme.of(context).primaryColor,
+            width: _size.width,
+            height: _size.height * 0.10,
+            child: Center(
+              child: Text(
+                'Iniciar',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                    color: Colors.white),
+              ),
             ),
           ),
-        ),
-        onTap: () {
-          Navigator.of(context)
-              .pushNamed('/evaluation', arguments: store.customerId);
-        },
-      ).animate().fadeIn(duration: Duration(seconds: 1)),
-    );
+          onTap: () {
+            Navigator.of(context)
+                .pushNamed('/evaluation', arguments: store.customerId);
+          },
+        ).animate().fadeIn(duration: Duration(seconds: 1)),
+      );
+    }
+
+    return Container();
   }
 }

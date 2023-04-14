@@ -62,9 +62,8 @@ class _EvaluationPageState extends State<EvaluationPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
+                  SizedBox(
                     height: size.height * 0.80,
-                    color: Color.fromARGB(255, 255, 255, 255),
                     child: CarouselSlider.builder(
                       carouselController: store.sliderController,
                       options: CarouselOptions(
@@ -138,7 +137,6 @@ class _EvaluationPageState extends State<EvaluationPage> {
                     showButtonSend: store.showButtonSend,
                     onPressedEvaluate: () {
                       if (checkAnswerSelected(context)) {
-                        updateIndex();
                         createEvaluation();
                         nextAction();
                       }
@@ -157,6 +155,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
     if (store.index >= store.questions.length) {
       store.postEvaluations();
     } else {
+      updateIndex();
       store.sliderController.nextPage();
     }
   }

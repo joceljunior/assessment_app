@@ -14,7 +14,6 @@ class SplashController implements ISplashController {
 
   @override
   Future<Customer> getCustomer({required String url}) async {
-    appStore.changeTheme(key: AssessmentThemeKeys.defaultTheme);
     try {
       final db = await SharedPreferences.getInstance();
       db.clear();
@@ -23,11 +22,11 @@ class SplashController implements ISplashController {
       if (customer.id == 5) {
         customer.pathLogo = "assets/skina_pao.jpg";
         appStore.changeTheme(key: AssessmentThemeKeys.skinaPao);
-      }
-
-      if (customer.id == 6) {
+      } else if (customer.id == 6) {
         customer.pathLogo = "assets/sabor_trigo.jpg";
         appStore.changeTheme(key: AssessmentThemeKeys.saborTrigo);
+      } else {
+        appStore.changeTheme(key: AssessmentThemeKeys.defaultTheme);
       }
 
       return customer;

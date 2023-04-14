@@ -9,6 +9,7 @@ import 'package:assessment_app/app/repositories/interfaces/i_evaluation_reposito
 import 'package:assessment_app/app/repositories/interfaces/i_question_repository.dart';
 import 'package:assessment_app/app/views/evaluation/store/evaluation_store.dart';
 import 'package:assessment_app/app/views/splash/store/splash_store.dart';
+import 'package:assessment_app/store/app_store.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
@@ -18,6 +19,7 @@ class AssessmentBinds {
   static void setup() {
     GetIt getIt = GetIt.instance;
     getIt.registerFactory<Dio>(() => Dio());
+    getIt.registerLazySingleton<AppStore>(() => AppStore());
     getIt.registerFactory<SplashStore>(() => SplashStore());
     getIt.registerFactory<EvaluationStore>(() => EvaluationStore());
     getIt.registerLazySingleton<ISplashController>(() => SplashController());

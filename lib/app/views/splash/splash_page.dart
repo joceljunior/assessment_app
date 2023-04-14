@@ -104,7 +104,7 @@ class _SplashPageState extends State<SplashPage> {
     return Animate(
       child: GestureDetector(
         child: Container(
-          color: Color.fromARGB(255, 27, 115, 231),
+          color: Theme.of(context).primaryColor,
           width: _size.width,
           height: _size.height * 0.10,
           child: Center(

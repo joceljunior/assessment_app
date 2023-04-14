@@ -25,14 +25,14 @@ class _StepsEvaluationWidgetState extends State<StepsEvaluationWidget> {
         size: 8,
         padding: 0,
         selectedColor: Colors.yellow,
-        unselectedColor: Colors.cyan,
+        unselectedColor: Colors.white,
         roundedEdges: Radius.circular(10),
         selectedGradientColor: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color.fromARGB(255, 33, 150, 243),
-            Color.fromRGBO(144, 202, 249, 1)
+            Theme.of(context).primaryColor,
+            Color.fromRGBO(180, 206, 227, 1)
           ],
         ),
         unselectedGradientColor: LinearGradient(

@@ -54,4 +54,17 @@ class EvaluationStore extends ValueNotifier<EvaluationState> {
       value = ShowOptions(show: false);
     }
   }
+
+  @override
+  void dispose() {
+    index = 0;
+    commentController.clear();
+    evaluations = [];
+    questions = [];
+    answerSelected = 0;
+    currentQuestion = Question(id: 0, question: "");
+    optionsSelected = [];
+    showOption = false;
+    super.dispose();
+  }
 }

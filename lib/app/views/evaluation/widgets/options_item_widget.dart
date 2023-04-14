@@ -53,7 +53,7 @@ class _OptionsItemWidgetState extends State<OptionsItemWidget> {
               setState(() {});
             },
             backgroundColor: Colors.grey.shade50,
-            selectedColor: Colors.orange,
+            selectedColor: Theme.of(context).primaryColor,
           );
         }).toList());
   }

@@ -29,5 +29,5 @@ class Evaluation {
     return result;
   }
 
-  String toJson() => json.encode(toMap());
+  Map<String, dynamic> toJson() => toMap();
 }

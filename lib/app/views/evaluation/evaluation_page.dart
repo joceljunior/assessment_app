@@ -25,14 +25,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
   @override
   void initState() {
     store.getQuestions(customerId: widget.customerId);
-    store.addListener(() {
-      var state = store.value;
-      if (state is ShowOptions) {
-        setState(() {
-          store.showOption = state.show;
-        });
-      }
-    });
+    listener();
     super.initState();
   }
 
@@ -147,10 +140,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
                       if (checkAnswerSelected(context)) {
                         updateIndex();
                         createEvaluation();
-                        if (store.index >= store.questions.length) {
-                          store.postEvaluations();
-                        }
-                        store.sliderController.nextPage();
+                        nextAction();
                       }
                     },
                   ),
@@ -161,6 +151,14 @@ class _EvaluationPageState extends State<EvaluationPage> {
         },
       ),
     );
+  }
+
+  void nextAction() {
+    if (store.index >= store.questions.length) {
+      store.postEvaluations();
+    } else {
+      store.sliderController.nextPage();
+    }
   }
 
   void createEvaluation() {
@@ -191,6 +189,21 @@ class _EvaluationPageState extends State<EvaluationPage> {
   void updateIndex() {
     setState(() {
       store.index++;
+    });
+  }
+
+  void listener() {
+    store.addListener(() {
+      var state = store.value;
+      if (state is ShowOptions) {
+        setState(() {
+          store.showOption = state.show;
+        });
+      }
+
+      if (state is EvaluationSuccess) {
+        Navigator.pushNamed(context, "/checkout");
+      }
     });
   }
 }

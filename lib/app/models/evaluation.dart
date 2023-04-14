@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class Evaluation {
   final int idQuestion;
   final int idCustomer;

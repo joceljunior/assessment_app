@@ -96,7 +96,11 @@ class _SplashPageState extends State<SplashPage> {
   Widget buildFadeButton(BuildContext context, SplashState state) {
     var _size = MediaQuery.of(context).size;
     if (state is Loading) {
-      return Expanded(child: Center(child: CircularProgressIndicator()));
+      return Expanded(
+          child: Center(
+              child: CircularProgressIndicator(
+        color: Theme.of(context).primaryColor,
+      )));
     }
     if (state is Success) {
       return Animate(

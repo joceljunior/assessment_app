@@ -1,3 +1,4 @@
+import 'package:assessment_app/core/widgets/bottom_sheet_widget.dart';
 import 'package:flutter/material.dart';
 
 class CheckoutPage extends StatelessWidget {
@@ -19,6 +20,7 @@ class CheckoutPage extends StatelessWidget {
           ),
         ),
       ),
+      bottomSheet: BottomSheetWidget(),
     );
   }
 }

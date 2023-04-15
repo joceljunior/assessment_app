@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
+import '../../../core/widgets/bottom_sheet_widget.dart';
 import '../../models/evaluation.dart';
 import 'store/evaluation_store.dart';
 import 'widgets/form_comment_evaluation_widget.dart';
@@ -46,7 +47,9 @@ class _EvaluationPageState extends State<EvaluationPage> {
         builder: (context, state, child) {
           if (state is Loading || state is EvaluationSuccess) {
             return Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                color: Theme.of(context).primaryColor,
+              ),
             );
           }
           if (state is Error) {
@@ -151,6 +154,7 @@ class _EvaluationPageState extends State<EvaluationPage> {
           );
         },
       ),
+      bottomSheet: BottomSheetWidget(),
     );
   }
 

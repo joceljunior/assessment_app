@@ -13,7 +13,7 @@ class BottomSheetWidget extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset("pitaco.png", height: size.height * 0.04),
+            Image.asset("pitaco_sheet.png", height: size.height * 0.04),
           ],
         ),
       ),

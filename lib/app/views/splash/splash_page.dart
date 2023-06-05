@@ -19,6 +19,17 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     store.getCustomer(url: widget.url);
     super.initState();
+
+    store.addListener(() {
+      var state = store.value;
+
+      if (state is Error) {
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          '/error',
+          (route) => true,
+        );
+      }
+    });
   }
 
   @override

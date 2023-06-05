@@ -1,4 +1,5 @@
 import 'package:assessment_app/app/views/checkout/checkout_page.dart';
+import 'package:assessment_app/core/views/error_page.dart';
 import 'package:flutter/material.dart';
 
 import '../app/views/evaluation/evaluation_page.dart';
@@ -22,6 +23,10 @@ class RouterAssessment {
       case '/checkout':
         return MaterialPageRoute(
           builder: (_) => CheckoutPage(),
+        );
+      case '/error':
+        return MaterialPageRoute(
+          builder: (_) => ErrorPage(),
         );
 
       default:

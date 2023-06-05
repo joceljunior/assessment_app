@@ -43,6 +43,7 @@ flutter_native_splash:
   color: "#FFFFFF" #backgound color
   image: assets/pitaco.png
   web: true
+  
 flutter:
   uses-material-design: true
 

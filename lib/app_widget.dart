@@ -29,7 +29,7 @@ class _AppWidgetState extends State<AppWidget> {
         return MaterialApp(
           onGenerateRoute: (settings) =>
               RouterAssessment().generateRoute(settings),
-          initialRoute: '/',
+          initialRoute: '/error',
           title: 'Assessment',
           theme: theme,
         );

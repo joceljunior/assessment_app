@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -9,6 +8,7 @@ class ErrorPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -16,8 +16,8 @@ class ErrorPage extends StatelessWidget {
             child: Animate(
               child: Image.asset(
                 height: size.height * 0.3,
-                'error.png',
-              ).animate().shakeX(duration: Duration(seconds: 3)).shimmer(),
+                'error_teste.jpg',
+              ).animate().shake(duration: Duration(seconds: 3)).shimmer(),
             ),
           ),
           Padding(

@@ -16,7 +16,7 @@ class ErrorPage extends StatelessWidget {
             child: Animate(
               child: Image.asset(
                 height: size.height * 0.3,
-                'error_teste.jpg',
+                "assets/error_teste.jpg",
               ).animate().shake(duration: Duration(seconds: 3)).shimmer(),
             ),
           ),

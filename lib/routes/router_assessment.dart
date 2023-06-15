@@ -11,7 +11,7 @@ class RouterAssessment {
     switch (settings.name) {
       case '/':
         String completedUrl = settings.name!;
-        // ignore: unused_local_variable
+
         var url = completedUrl.isEmpty
             ? ""
             : completedUrl.substring(

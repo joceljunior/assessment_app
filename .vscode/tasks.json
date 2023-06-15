@@ -1,0 +1,21 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run tests",
+			"type": "flutter",
+			"command": "flutter",
+			"args": [
+				"test"
+			],
+			"group": "test",
+			"problemMatcher": [],
+		},
+		{
+			"label": "HTTP Server Homologacao",
+			"type": "shell",
+			"command": "dhttpd --path build/web",
+			"dependsOn": "Deploy Homologacao",
+		}
+	]
+}

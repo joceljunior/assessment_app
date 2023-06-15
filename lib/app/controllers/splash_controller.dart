@@ -19,10 +19,10 @@ class SplashController implements ISplashController {
       db.clear();
       var customer = await repository.getCustomer(url: url);
       await db.setInt('session', customer.idSession);
-      if (customer.id == 5) {
+      if (customer.id == 2) {
         customer.pathLogo = "assets/skina_pao.jpg";
         appStore.changeTheme(key: AssessmentThemeKeys.skinaPao);
-      } else if (customer.id == 6) {
+      } else if (customer.id == 3) {
         customer.pathLogo = "assets/sabor_trigo.jpg";
         appStore.changeTheme(key: AssessmentThemeKeys.saborTrigo);
       } else {

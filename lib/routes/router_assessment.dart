@@ -10,8 +10,14 @@ class RouterAssessment {
     var args = settings.arguments;
     switch (settings.name) {
       case '/':
+        String completedUrl = settings.name!;
+        // ignore: unused_local_variable
+        var url = completedUrl.isEmpty
+            ? ""
+            : completedUrl.substring(
+                completedUrl.indexOf('#') + 2, completedUrl.length);
         return MaterialPageRoute(
-          builder: (_) => SplashPage(url: ""),
+          builder: (_) => SplashPage(url: url),
         );
 
       case '/evaluation':
